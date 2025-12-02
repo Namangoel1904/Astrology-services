@@ -16,8 +16,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="mr" className="dark" suppressHydrationWarning>
-      <body className="antialiased bg-black text-white">
+    <html lang="mr" suppressHydrationWarning>
+      <body className="antialiased">
         <ErrorReporter />
         <Script
           src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/scripts//route-messenger.js"
