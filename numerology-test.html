@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>अंक ज्योतिष - Numerology Prediction (Test Version)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .result-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .number-badge {
+            background: linear-gradient(45deg, #f59e0b, #fbbf24);
+            color: #000;
+            font-weight: bold;
+        }
+        
+        .master-badge {
+            background: linear-gradient(45deg, #10b981, #34d399);
+            color: #000;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-white mb-4">
+                🔮 अंक ज्योतिष (Test Version)
+            </h1>
+            <p class="text-xl text-blue-200">
+                आपके नाम और जन्म तिथि से जानें आपका भविष्य
+            </p>
+            <p class="text-sm text-yellow-200 mt-2">
+                ⚠️ This is a demo version with sample data for testing
+            </p>
+        </div>
+
+        <div class="max-w-4xl mx-auto">
+            <!-- Form -->
+            <div class="card-glass rounded-lg p-6 mb-8">
+                <h2 class="text-2xl text-white text-center mb-6">
+                    अंक ज्योतिष विश्लेषण
+                </h2>
+                
+                <form id="numerologyForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="name" class="block text-white font-semibold mb-2">
+                                नाम *
+                            </label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                required
+                                placeholder="अपना पूरा नाम लिखें"
+                                class="w-full p-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+                        
+                        <div>
+                            <label for="date" class="block text-white font-semibold mb-2">
+                                जन्म तिथि *
+                            </label>
+                            <div class="flex gap-2">
+                                <input
+                                    type="date"
+                                    id="date"
+                                    name="date"
+                                    required
+                                    class="flex-1 p-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                                <button
+                                    type="button"
+                                    id="todayBtn"
+                                    class="px-4 py-3 bg-white/20 border border-white/30 text-white rounded-lg hover:bg-white/30 transition-colors"
+                                >
+                                    आज
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="lang" class="block text-white font-semibold mb-2">
+                            भाषा
+                        </label>
+                        <select
+                            id="lang"
+                            name="lang"
+                            class="w-full p-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="hi">हिंदी</option>
+                            <option value="en">English</option>
+                            <option value="mr">मराठी</option>
+                            <option value="gu">ગુજરાતી</option>
+                            <option value="bn">বাংলা</option>
+                            <option value="ta">தமிழ்</option>
+                            <option value="te">తెలుగు</option>
+                            <option value="kn">ಕನ್ನಡ</option>
+                            <option value="ml">മലയാളം</option>
+                        </select>
+                    </div>
+
+                    <div class="text-center">
+                        <button
+                            type="submit"
+                            id="submitBtn"
+                            class="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3 text-lg font-semibold rounded-lg transition-all duration-300 transform hover:scale-105"
+                        >
+                            अंक ज्योतिष विश्लेषण करें
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="hidden bg-red-500/20 border border-red-500/30 rounded-lg p-4 mb-8">
+                <p class="text-red-200 text-center"></p>
+            </div>
+
+            <!-- Results -->
+            <div id="results" class="hidden">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-white mb-2">
+                        आपका अंक ज्योतिष विश्लेषण
+                    </h2>
+                    <p id="userInfo" class="text-blue-200"></p>
+                </div>
+
+                <!-- Numerology Results -->
+                <div id="numerologyResults" class="space-y-6">
+                    <!-- Results will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const form = document.getElementById('numerologyForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            const results = document.getElementById('results');
+            const numerologyResults = document.getElementById('numerologyResults');
+            const userInfo = document.getElementById('userInfo');
+            const todayBtn = document.getElementById('todayBtn');
+
+            // Set today's date
+            todayBtn.addEventListener('click', function() {
+                const today = new Date();
+                const formattedDate = today.toISOString().split('T')[0];
+                document.getElementById('date').value = formattedDate;
+            });
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(form);
+                const data = {
+                    name: formData.get('name'),
+                    date: formData.get('date'),
+                    lang: formData.get('lang')
+                };
+
+                // Show loading state
+                submitBtn.textContent = 'विश्लेषण हो रहा है...';
+                submitBtn.disabled = true;
+                errorMessage.classList.add('hidden');
+                results.classList.add('hidden');
+
+                try {
+                    // For local testing, we'll use demo data
+                    console.log('Form data:', data);
+                    
+                    // Simulate API delay
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                    // Demo numerology data
+                    const demoResult = {
+                        destiny: {
+                            title: "भाग्य",
+                            category: "destiny",
+                            number: "4",
+                            master: false,
+                            meaning: "यह मेहनती, समर्पित, ईमानदार कर्मचारी/उद्यमी और दयालु, वफादार दोस्त का मार्ग है।",
+                            description: "यह आपकी व्यक्तिगत प्रेरणाओं के संबंध में सबसे प्रभावशाली संख्या है, आप अपने परिवेश में क्या और किसे पसंद करते हैं, और जिस करियर की आप सबसे अधिक इच्छा रखते हैं।"
+                        },
+                        personality: {
+                            title: "व्यक्तित्व",
+                            category: "personality",
+                            number: "25",
+                            master: false,
+                            meaning: "तुम चतुर और बुद्धिमान हो, और हर बात पर आश्चर्य करते हो। आपका सहज ज्ञान का भंडार और अत्यधिक दयालु, उदार स्वभाव सामान्य रूप से मानवता के प्रति आपकी जिम्मेदारी की सहज भावना को जन्म देता है।",
+                            description: "यह संख्या पर्दे के पीछे या आपको निजी रूप में बताती है।"
+                        },
+                        attitude: {
+                            title: "रवैया",
+                            category: "attitude",
+                            number: "8",
+                            master: false,
+                            meaning: "आप जो कुछ भी करते हैं उसमें अनुकरणीय होने के लिए आप पैदा हुए हैं; जो नियंत्रण में महसूस करने की आपकी आवश्यकता से उत्पन्न होता है। प्रोत्साहित किए जाने पर आप \"सीधे छात्र\" हैं।",
+                            description: "यह संख्या आपके जीवन के पहले 30-35 वर्षों में सबसे शक्तिशाली है और यह दर्शाती है कि आप अपनी युवावस्था में परिस्थितियों पर कैसे और क्यों प्रतिक्रिया करते हैं।"
+                        },
+                        character: {
+                            title: "चरित्र",
+                            category: "character",
+                            number: "7",
+                            master: false,
+                            meaning: "दार्शनिक रूप से अवांट-गार्डे, ज्ञान प्राप्त करने वाले प्रतिभा के रूप में, आप लाइमलाइट की तलाश नहीं करते हैं, लेकिन उत्कृष्ट शिक्षक, प्रोफेसर और करियर विशेषज्ञ हैं।",
+                            description: "यह संख्या मुख्य रूप से आपके सार्वजनिक और सामाजिक गुणों का प्रतिनिधित्व करती है, लेकिन आप अपने व्यक्तिगत संबंधों में भी बहुत कुछ प्रदर्शित करता है"
+                        },
+                        soul: {
+                            title: "आत्मा से आग्रह",
+                            category: "soul",
+                            number: "2",
+                            master: false,
+                            meaning: "आपकी आत्मा का आग्रह शांति, सद्भाव और चालाकी को प्रभावित करना है ताकि आप उन लोगों में अधिक पोषण और प्रेमपूर्ण गुण ला सकें जिन्हें आप जानते हैं और आराम करते हैं।",
+                            description: "यह प्रभाव आपके सहज, आत्मीय स्व का एक दृश्य प्रस्तुत करता है।"
+                        },
+                        agenda: {
+                            title: "गुप्त एजेंडा",
+                            category: "agenda",
+                            number: "5",
+                            master: false,
+                            meaning: "यह एजेंडा जितना संभव हो यात्रा करने और अनर्गल रहने की क्षमता प्राप्त करने के साथ-साथ किसी भी चीज़ से अधिक स्वतंत्रता की सहज इच्छा को प्रेरित करता है।",
+                            description: "यह कंपन आपकी जन्मजात (छिपी हुई) इच्छाओं को प्रदान करता है।"
+                        },
+                        purpose: {
+                            title: "ईश्वरीय उद्देश्य",
+                            category: "purpose",
+                            number: "11",
+                            master: true,
+                            meaning: "आपका ईश्वरीय उद्देश्य लोगों को आध्यात्मिक, मनोवैज्ञानिक और मानसिक स्तर पर मदद करना है। ज्ञान के शब्दों से दूसरों का उत्थान करना; सुनने, सलाह देने और दूसरों को उनके जीवन की यात्रा पर आगे बढ़ने में मदद करने के लिए।",
+                            description: "यह आपका विदाई-प्रदर्शन संख्या कंपन है। यह वही है जो आपके आत्मीय स्व ने आपके जीवन के बाद के वर्षों में हासिल करने के लिए चुना है।"
+                        }
+                    };
+                    
+                    displayResults(demoResult, data);
+                    
+                } catch (error) {
+                    showError(error.message);
+                } finally {
+                    submitBtn.textContent = 'अंक ज्योतिष विश्लेषण करें';
+                    submitBtn.disabled = false;
+                }
+            });
+
+            function displayResults(numerologyData, userData) {
+                // Update user info
+                const formattedDate = new Date(userData.date).toLocaleDateString('hi-IN');
+                userInfo.innerHTML = `नाम: <span class="font-semibold">${userData.name}</span> | जन्म तिथि: <span class="font-semibold">${formattedDate}</span>`;
+
+                // Clear previous results
+                numerologyResults.innerHTML = '';
+
+                // Display each numerology aspect
+                const aspects = [
+                    { key: 'destiny', title: 'भाग्य', icon: '🌟' },
+                    { key: 'personality', title: 'व्यक्तित्व', icon: '👤' },
+                    { key: 'attitude', title: 'रवैया', icon: '😊' },
+                    { key: 'character', title: 'चरित्र', icon: '💎' },
+                    { key: 'soul', title: 'आत्मा से आग्रह', icon: '🕊️' },
+                    { key: 'agenda', title: 'गुप्त एजेंडा', icon: '🔮' },
+                    { key: 'purpose', title: 'ईश्वरीय उद्देश्य', icon: '✨' }
+                ];
+
+                aspects.forEach(aspect => {
+                    const data = numerologyData[aspect.key];
+                    if (data) {
+                        const card = createNumerologyCard(aspect, data);
+                        numerologyResults.appendChild(card);
+                    }
+                });
+
+                results.classList.remove('hidden');
+            }
+
+            function createNumerologyCard(aspect, data) {
+                const card = document.createElement('div');
+                card.className = 'result-card rounded-lg p-6';
+                
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                            ${aspect.icon} ${data.title}
+                        </h3>
+                        <div class="flex items-center gap-2">
+                            <span class="number-badge px-3 py-1 rounded-full text-lg font-bold">
+                                ${data.number}
+                            </span>
+                            ${data.master ? '<span class="master-badge px-2 py-1 rounded text-sm font-semibold">मास्टर</span>' : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-lg font-semibold text-blue-200 mb-2">अर्थ:</h4>
+                            <p class="text-white leading-relaxed">${data.meaning}</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-lg font-semibold text-blue-200 mb-2">विवरण:</h4>
+                            <p class="text-white leading-relaxed">${data.description}</p>
+                        </div>
+                    </div>
+                `;
+                
+                return card;
+            }
+
+            function showError(message) {
+                errorMessage.querySelector('p').textContent = message;
+                errorMessage.classList.remove('hidden');
+            }
+        })();
+    </script>
+</body>
+</html>

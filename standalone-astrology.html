@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>पंचांग आणि दैनिक भविष्य</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'amber': {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                            950: '#451a03',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .loading {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-amber-50 via-orange-50 to-amber-100 min-h-screen">
+    <!-- Header -->
+    <div class="gradient-bg text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl font-bold mb-2">पंचांग आणि दैनिक भविष्य</h1>
+            <p class="text-xl opacity-90">दैनिक पंचांग तपशील आणि राशिफल</p>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Panchang Section -->
+            <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 space-y-6 border border-amber-300/60 card-shadow">
+                <div class="text-center">
+                    <h2 class="text-2xl font-bold text-amber-900 mb-2">आजचे पंचांग</h2>
+                    <p class="text-amber-800/80">दैनिक पंचांग तपशील</p>
+                </div>
+                
+                <form id="panchangForm" class="grid grid-cols-1 gap-4">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-amber-900">शहर शोधा</label>
+                        <input type="text" id="city" placeholder="उदा. मुंबई, पुणे, दिल्ली" 
+                               class="w-full px-3 py-2 border border-amber-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-amber-900">तारीख (DD/MM/YYYY)</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="date" name="date" placeholder="17/10/2025" required
+                                   class="flex-1 px-3 py-2 border border-amber-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <button type="button" onclick="setToday()" 
+                                    class="px-4 py-2 bg-amber-100 text-amber-800 rounded-md hover:bg-amber-200 transition-colors">
+                                आज
+                            </button>
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="lat" name="lat" value="19.0760">
+                    <input type="hidden" id="lon" name="lon" value="72.8777">
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-amber-900">वेळ क्षेत्र (e.g. 5.5)</label>
+                        <input type="text" id="tz" name="tz" value="5.5" placeholder="5.5" required
+                               class="w-full px-3 py-2 border border-amber-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                    <input type="hidden" id="lang" name="lang" value="mr">
+
+                    <div>
+                        <button type="submit" id="panchangBtn" 
+                                class="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-medium py-3 px-4 rounded-md transition-all duration-300">
+                            पंचांग मिळवा
+                        </button>
+                    </div>
+                </form>
+
+                <div id="panchangError" class="text-red-500 text-sm text-center hidden"></div>
+                <div id="panchangResult" class="space-y-6 hidden"></div>
+            </div>
+
+            <!-- Horoscope Section -->
+            <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 space-y-6 border border-amber-300/60 card-shadow">
+                <div class="text-center">
+                    <h2 class="text-2xl font-bold text-amber-900 mb-2">दैनिक राशिफल</h2>
+                    <p class="text-amber-800/80">आपल्या राशीचे दैनिक भविष्य</p>
+                </div>
+                
+                <form id="horoscopeForm" class="grid grid-cols-1 gap-4">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-amber-900">तारीख (DD/MM/YYYY)</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="horoscope-date" name="horoscope-date" placeholder="17/10/2025" required
+                                   class="flex-1 px-3 py-2 border border-amber-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <button type="button" onclick="setHoroscopeToday()" 
+                                    class="px-4 py-2 bg-amber-100 text-amber-800 rounded-md hover:bg-amber-200 transition-colors">
+                                आज
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-amber-900">राशी निवडा</label>
+                        <select id="zodiac" name="zodiac" required
+                                class="w-full px-3 py-2 border border-amber-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option value="">आपली राशी निवडा</option>
+                            <option value="1">मेष (Aries)</option>
+                            <option value="2">वृषभ (Taurus)</option>
+                            <option value="3">मिथुन (Gemini)</option>
+                            <option value="4">कर्क (Cancer)</option>
+                            <option value="5">सिंह (Leo)</option>
+                            <option value="6">कन्या (Virgo)</option>
+                            <option value="7">तुला (Libra)</option>
+                            <option value="8">वृश्चिक (Scorpio)</option>
+                            <option value="9">धनु (Sagittarius)</option>
+                            <option value="10">मकर (Capricorn)</option>
+                            <option value="11">कुंभ (Aquarius)</option>
+                            <option value="12">मीन (Pisces)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <button type="submit" id="horoscopeBtn" 
+                                class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-3 px-4 rounded-md transition-all duration-300">
+                            राशिफल मिळवा
+                        </button>
+                    </div>
+                </form>
+
+                <div id="horoscopeError" class="text-red-500 text-sm text-center hidden"></div>
+                <div id="horoscopeResult" class="space-y-6 hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set today's date
+        function setToday() {
+            const today = new Date();
+            const dd = String(today.getDate()).padStart(2, '0');
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const yyyy = today.getFullYear();
+            document.getElementById('date').value = `${dd}/${mm}/${yyyy}`;
+        }
+
+        function setHoroscopeToday() {
+            const today = new Date();
+            const dd = String(today.getDate()).padStart(2, '0');
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const yyyy = today.getFullYear();
+            document.getElementById('horoscope-date').value = `${dd}/${mm}/${yyyy}`;
+        }
+
+        // Set today's date on page load
+        setToday();
+        setHoroscopeToday();
+
+        // Panchang form submission
+        document.getElementById('panchangForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('panchangBtn');
+            const errorDiv = document.getElementById('panchangError');
+            const resultDiv = document.getElementById('panchangResult');
+            
+            btn.innerHTML = '<span class="loading">⏳</span> पंचांग मिळवत आहे...';
+            btn.disabled = true;
+            errorDiv.classList.add('hidden');
+            resultDiv.classList.add('hidden');
+
+            try {
+                const formData = new FormData(this);
+                const data = Object.fromEntries(formData.entries());
+                
+                // For demo purposes, show sample data
+                // In real implementation, you'd call your API
+                setTimeout(() => {
+                    showPanchangResult({
+                        tithi: { name: 'पूर्णिमा', type: 'शुक्ल' },
+                        nakshatra: { name: 'रोहिणी' },
+                        yoga: { name: 'सिद्धि' },
+                        karana: { name: 'विष्टि' },
+                        day: { name: 'सोमवार' },
+                        advanced_details: {
+                            sun_rise: '06:30',
+                            sun_set: '18:15',
+                            moon_rise: '19:45',
+                            moon_set: '07:20',
+                            masa: { ritu: 'वसंत', paksha: 'शुक्ल' },
+                            years: { saka: '1947', vikram_samvaat: '2081' },
+                            abhijit_muhurta: { start: '11:45', end: '12:30' }
+                        },
+                        rahukaal: '14:30 - 16:00',
+                        gulika: '12:00 - 13:30',
+                        yamakanta: '09:00 - 10:30'
+                    });
+                    
+                    btn.innerHTML = 'पंचांग मिळवा';
+                    btn.disabled = false;
+                }, 2000);
+                
+            } catch (error) {
+                errorDiv.textContent = 'त्रुटी: ' + error.message;
+                errorDiv.classList.remove('hidden');
+                btn.innerHTML = 'पंचांग मिळवा';
+                btn.disabled = false;
+            }
+        });
+
+        // Horoscope form submission
+        document.getElementById('horoscopeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('horoscopeBtn');
+            const errorDiv = document.getElementById('horoscopeError');
+            const resultDiv = document.getElementById('horoscopeResult');
+            
+            btn.innerHTML = '<span class="loading">⏳</span> राशिफल मिळवत आहे...';
+            btn.disabled = true;
+            errorDiv.classList.add('hidden');
+            resultDiv.classList.add('hidden');
+
+            try {
+                const formData = new FormData(this);
+                const date = formData.get('horoscope-date');
+                const zodiac = formData.get('zodiac');
+                
+                // For demo purposes, show sample data
+                // In real implementation, you'd call your API
+                setTimeout(() => {
+                    showHoroscopeResult({
+                        total_score: 75,
+                        zodiac: 'मिथुन',
+                        lucky_color: 'नीला',
+                        lucky_number: [7, 14],
+                        health: 80,
+                        career: 65,
+                        finances: 70,
+                        relationship: 85,
+                        family: 90,
+                        friends: 75,
+                        travel: 60,
+                        physique: 85,
+                        bot_response: 'आज तुमच्या भाग्यात चांगली वाढ आहे. कामाच्या क्षेत्रात यश मिळेल. प्रेम संबंधात सुधारणा होईल. कुटुंबात सुख-शांती राहील. आरोग्य चांगले राहील. नवीन योजना सुरू करण्यासाठी आजचा दिवस योग्य आहे.'
+                    });
+                    
+                    btn.innerHTML = 'राशिफल मिळवा';
+                    btn.disabled = false;
+                }, 2000);
+                
+            } catch (error) {
+                errorDiv.textContent = 'त्रुटी: ' + error.message;
+                errorDiv.classList.remove('hidden');
+                btn.innerHTML = 'राशिफल मिळवा';
+                btn.disabled = false;
+            }
+        });
+
+        function showPanchangResult(data) {
+            const resultDiv = document.getElementById('panchangResult');
+            resultDiv.innerHTML = `
+                <div class="space-y-6">
+                    <div class="bg-amber-50/60 rounded-lg p-4 border border-amber-300/60">
+                        <div class="text-base font-semibold mb-3 text-amber-900">आजचे पंचांग</div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between py-2 border-b border-amber-200">
+                                <span class="text-sm text-amber-800/90">तिथि</span>
+                                <span class="text-sm font-medium text-amber-950">${data.tithi.name} (${data.tithi.type})</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-amber-200">
+                                <span class="text-sm text-amber-800/90">नक्षत्र</span>
+                                <span class="text-sm font-medium text-amber-950">${data.nakshatra.name}</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-amber-200">
+                                <span class="text-sm text-amber-800/90">योग</span>
+                                <span class="text-sm font-medium text-amber-950">${data.yoga.name}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-amber-50/60 rounded-lg p-4 border border-amber-300/60">
+                        <div class="text-base font-semibold mb-3 text-amber-900">सूर्य आणि चंद्र गणना</div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between py-2 border-b border-amber-200">
+                                <span class="text-sm text-amber-800/90">सूर्योदय</span>
+                                <span class="text-sm font-medium text-amber-950">${data.advanced_details.sun_rise}</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-amber-200">
+                                <span class="text-sm text-amber-800/90">सूर्यास्त</span>
+                                <span class="text-sm font-medium text-amber-950">${data.advanced_details.sun_set}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            resultDiv.classList.remove('hidden');
+        }
+
+        function showHoroscopeResult(data) {
+            const resultDiv = document.getElementById('horoscopeResult');
+            resultDiv.innerHTML = `
+                <div class="space-y-6">
+                    <div class="bg-purple-50/60 rounded-lg p-4 border border-purple-300/60">
+                        <div class="text-base font-semibold mb-3 text-purple-900">आजचे भविष्य</div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between py-2 border-b border-purple-200">
+                                <span class="text-sm text-purple-800/90">एकूण गुण</span>
+                                <span class="text-sm font-medium text-purple-950">${data.total_score}/100</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-purple-200">
+                                <span class="text-sm text-purple-800/90">राशी</span>
+                                <span class="text-sm font-medium text-purple-950">${data.zodiac}</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-purple-200">
+                                <span class="text-sm text-purple-800/90">शुभ रंग</span>
+                                <span class="text-sm font-medium text-purple-950">${data.lucky_color}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-purple-50/60 rounded-lg p-4 border border-purple-300/60">
+                        <div class="text-base font-semibold mb-3 text-purple-900">जीवनाचे क्षेत्र</div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between py-2 border-b border-purple-200">
+                                <span class="text-sm text-purple-800/90">आरोग्य</span>
+                                <span class="text-sm font-medium text-purple-950">${data.health}/100</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-purple-200">
+                                <span class="text-sm text-purple-800/90">करिअर</span>
+                                <span class="text-sm font-medium text-purple-950">${data.career}/100</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-purple-200">
+                                <span class="text-sm text-purple-800/90">पैसा</span>
+                                <span class="text-sm font-medium text-purple-950">${data.finances}/100</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-4 border border-purple-200">
+                        <div class="text-base font-semibold mb-3 text-purple-900">आजचे भविष्यवाणी</div>
+                        <p class="text-sm leading-relaxed text-purple-900">${data.bot_response}</p>
+                    </div>
+                </div>
+            `;
+            resultDiv.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
+

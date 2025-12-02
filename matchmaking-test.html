@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>दशकूट मिलान - Matchmaking Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #fed7aa 0%, #fecaca 50%, #fef3c7 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        /* City suggestions visibility */
+        #boy_city_list, #girl_city_list { color: #111827; background: #ffffff; }
+        #boy_city_list button, #girl_city_list button { color: #111827; }
+        #boy_city_list button:hover, #girl_city_list button:hover { background: #f3f4f6; }
+        /* Mobile optimizations */
+        .container { width: 100%; }
+        .responsive-section { width: 100%; overflow-x: auto; }
+        /* Ensure injected SVGs scale */
+        #boyChart svg, #girlChart svg { max-width: 100%; width: 100% !important; height: auto !important; display: block; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen py-8">
+    <div class="container mx-auto px-4 max-w-6xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-orange-800 mb-4">
+                🔮 दशकूट मिलान
+            </h1>
+            <p class="text-lg text-gray-700">
+                वर-वधू की जन्मकुंडली के आधार पर विवाह अनुकूलता का विश्लेषण
+            </p>
+            <div class="mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg max-w-2xl mx-auto">
+                <p class="text-sm text-emerald-800">
+                    अब यह पेज लाइव API से जुड़ा है. WordPress में एम्बेड करने पर भी काम करेगा.
+                </p>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div class="bg-white rounded-lg card-shadow p-6 mb-8">
+            <h2 class="text-2xl font-semibold text-orange-700 mb-6">
+                जन्म विवरण दर्ज करें
+            </h2>
+            
+            <form id="matchmakingForm" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Boy's Details -->
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-semibold text-blue-700 border-b-2 border-blue-200 pb-2">
+                            👨 वर का विवरण
+                        </h3>
+                        
+                        <div>
+                            <label for="boy_dob" class="block text-sm font-medium text-gray-700 mb-1">जन्म तिथि *</label>
+                            <input type="date" id="boy_dob" name="boy_dob" required 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div>
+                            <label for="boy_tob" class="block text-sm font-medium text-gray-700 mb-1">जन्म समय *</label>
+                            <input type="time" id="boy_tob" name="boy_tob" required 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div>
+                            <label for="boy_tz" class="block text-sm font-medium text-gray-700 mb-1">समय क्षेत्र</label>
+                            <input type="number" id="boy_tz" name="boy_tz" step="0.5" value="5.5"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">जन्म स्थान *</label>
+                            <div class="relative">
+                                <input type="text" id="boy_city" placeholder="उदा. दिल्ली, मुंबई, पुणे" autocomplete="off"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <div id="boy_city_list" class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg hidden max-h-60 overflow-auto"></div>
+                            </div>
+                            <input type="hidden" id="boy_lat" name="boy_lat" value="28.033709">
+                            <input type="hidden" id="boy_lon" name="boy_lon" value="79.120544">
+                        </div>
+                    </div>
+
+                    <!-- Girl's Details -->
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-semibold text-pink-700 border-b-2 border-pink-200 pb-2">
+                            👩 वधू का विवरण
+                        </h3>
+                        
+                        <div>
+                            <label for="girl_dob" class="block text-sm font-medium text-gray-700 mb-1">जन्म तिथि *</label>
+                            <input type="date" id="girl_dob" name="girl_dob" required 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                        </div>
+
+                        <div>
+                            <label for="girl_tob" class="block text-sm font-medium text-gray-700 mb-1">जन्म समय *</label>
+                            <input type="time" id="girl_tob" name="girl_tob" required 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                        </div>
+
+                        <div>
+                            <label for="girl_tz" class="block text-sm font-medium text-gray-700 mb-1">समय क्षेत्र</label>
+                            <input type="number" id="girl_tz" name="girl_tz" step="0.5" value="5.5"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">जन्म स्थान *</label>
+                            <div class="relative">
+                                <input type="text" id="girl_city" placeholder="उदा. दिल्ली, मुंबई, पुणे" autocomplete="off"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                                <div id="girl_city_list" class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg hidden max-h-60 overflow-auto"></div>
+                            </div>
+                            <input type="hidden" id="girl_lat" name="girl_lat" value="28.679079">
+                            <input type="hidden" id="girl_lon" name="girl_lon" value="77.069710">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Language Selection -->
+                <div>
+                    <label for="lang" class="block text-sm font-medium text-gray-700 mb-1">भाषा</label>
+                    <select id="lang" name="lang" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        <option value="hi">हिंदी</option>
+                        <option value="mr">मराठी</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center">
+                    <button type="submit" id="submitBtn"
+                            class="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg font-semibold rounded-md transition-colors">
+                        दशकूट मिलान करें
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="bg-red-50 border border-red-200 rounded-lg p-6 mb-8 hidden">
+            <p class="text-red-700 text-center"></p>
+        </div>
+
+        <!-- Results -->
+        <div id="results" class="hidden space-y-8">
+            <!-- Overall Score -->
+            <div class="bg-white rounded-lg card-shadow text-center p-8">
+                <h2 class="text-3xl font-bold text-orange-800 mb-4">
+                    🎯 दशकूट मिलान परिणाम
+                </h2>
+                <div id="scoreDisplay" class="inline-block px-8 py-4 rounded-full text-4xl font-bold mb-4">
+                    <!-- Score will be inserted here -->
+                </div>
+                <p id="botResponse" class="text-lg text-gray-700">
+                    <!-- Bot response will be inserted here -->
+                </p>
+            </div>
+
+            <!-- Dashakoot Details -->
+            <div class="bg-white rounded-lg card-shadow p-6 responsive-section">
+                <h3 class="text-2xl font-semibold text-orange-700 mb-6">
+                    📊 दशकूट विवरण
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-gradient-to-r from-orange-100 to-yellow-100">
+                                <th class="px-4 py-3 text-left font-semibold text-orange-800 border border-orange-300">दशकूट नाम</th>
+                                <th class="px-4 py-3 text-left font-semibold text-blue-700 border border-orange-300">वर</th>
+                                <th class="px-4 py-3 text-left font-semibold text-pink-700 border border-orange-300">वधू</th>
+                                <th class="px-4 py-3 text-center font-semibold text-orange-800 border border-orange-300">अंक</th>
+                                <th class="px-4 py-3 text-left font-semibold text-gray-700 border border-orange-300">विवरण</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashakootDetails">
+                            <!-- Dashakoot table rows will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Horoscopic Charts -->
+            <div class="bg-white rounded-lg card-shadow p-6 responsive-section">
+                <h3 class="text-2xl font-semibold text-orange-700 mb-6">
+                    🏠 कुंडली चार्ट
+                </h3>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Boy's Chart -->
+                    <div class="text-center">
+                        <h4 class="text-xl font-semibold text-blue-700 mb-4">वर की कुंडली</h4>
+                        <div id="boyChart" class="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-lg border-2 border-blue-300 flex justify-center items-center min-h-[500px]">
+                            <!-- Chart SVG will be inserted here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Girl's Chart -->
+                    <div class="text-center">
+                        <h4 class="text-xl font-semibold text-pink-700 mb-4">वधू की कुंडली</h4>
+                        <div id="girlChart" class="bg-gradient-to-br from-pink-50 to-rose-50 p-4 rounded-lg border-2 border-pink-300 flex justify-center items-center min-h-[500px]">
+                            <!-- Chart SVG will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Planetary Details -->
+            <div class="bg-white rounded-lg card-shadow p-6 responsive-section">
+                <h3 class="text-2xl font-semibold text-orange-700 mb-6">
+                    🌟 ग्रह विवरण
+                </h3>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Boy's Planetary Details -->
+                    <div>
+                        <h4 class="text-xl font-semibold text-blue-700 mb-4">वर के ग्रह</h4>
+                        <div id="boyPlanets" class="overflow-x-auto">
+                            <!-- Planetary table will be inserted here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Girl's Planetary Details -->
+                    <div>
+                        <h4 class="text-xl font-semibold text-pink-700 mb-4">वधू के ग्रह</h4>
+                        <div id="girlPlanets" class="overflow-x-auto">
+                            <!-- Planetary table will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Astro Details -->
+            <div class="bg-white rounded-lg card-shadow p-6 responsive-section">
+                <h3 class="text-2xl font-semibold text-orange-700 mb-6">
+                    ✨ ज्योतिष विवरण
+                </h3>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Boy's Astro Details -->
+                    <div>
+                        <h4 class="text-xl font-semibold text-blue-700 mb-4">वर का ज्योतिष विवरण</h4>
+                        <div id="boyAstro" class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200">
+                            <!-- Astro details will be inserted here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Girl's Astro Details -->
+                    <div>
+                        <h4 class="text-xl font-semibold text-pink-700 mb-4">वधू का ज्योतिष विवरण</h4>
+                        <div id="girlAstro" class="bg-gradient-to-br from-pink-50 to-rose-50 p-6 rounded-lg border border-pink-200">
+                            <!-- Astro details will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Config ---
+        // Set this to your running Next.js host (localhost during dev, or your deployed domain)
+        const API_BASE = (window.API_BASE || 'http://localhost:3000');
+
+        // --- Helpers ---
+        function formatDateToDDMMYYYY(yyyyMMdd) {
+            if (!yyyyMMdd) return '';
+            const [y, m, d] = yyyyMMdd.split('-');
+            return `${d}/${m}/${y}`;
+        }
+
+        function buildQuery(params) {
+            return Object.entries(params)
+                .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`)
+                .join('&');
+        }
+
+        // --- City autocomplete (Nominatim) ---
+        function setupCityAutocomplete(inputId, listId, latId, lonId) {
+            const input = document.getElementById(inputId);
+            const list = document.getElementById(listId);
+            const latEl = document.getElementById(latId);
+            const lonEl = document.getElementById(lonId);
+            let abortController = null;
+
+            input.addEventListener('input', async () => {
+                const q = input.value.trim();
+                if (q.length < 2) {
+                    list.classList.add('hidden');
+                    list.innerHTML = '';
+                    return;
+                }
+                try {
+                    abortController?.abort();
+                    abortController = new AbortController();
+                    const proxyUrl = `${API_BASE}/api/geocode?q=${encodeURIComponent(q)}&limit=8&countrycodes=in`;
+                    let items = [];
+                    try {
+                        const res = await fetch(proxyUrl, {
+                            method: 'GET',
+                            headers: { 'Accept': 'application/json' },
+                            signal: abortController.signal,
+                            cache: 'no-store'
+                        });
+                        if (res.ok) {
+                            const json = await res.json();
+                            items = (json && Array.isArray(json.items)) ? json.items : [];
+                        } else {
+                            throw new Error('proxy geocode failed');
+                        }
+                    } catch (e) {
+                        // Fallback to direct Nominatim if proxy unavailable
+                        const directUrl = `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&countrycodes=in&limit=8&q=${encodeURIComponent(q)}`;
+                        const res2 = await fetch(directUrl, {
+                            method: 'GET',
+                            headers: { 'Accept': 'application/json' },
+                            signal: abortController.signal
+                        });
+                        if (res2.ok) {
+                            const json2 = await res2.json();
+                            items = Array.isArray(json2) ? json2.map(r => ({ id: r.place_id, name: r.display_name, lat: r.lat, lon: r.lon })) : [];
+                        }
+                    }
+                    if (items.length === 0) {
+                        list.classList.add('hidden');
+                        list.innerHTML = '';
+                        return;
+                    }
+                    list.innerHTML = items.map(r => `
+                        <button type="button" data-lat="${r.lat}" data-lon="${r.lon}" data-name="${r.name}"
+                                class="w-full text-left px-3 py-2 hover:bg-gray-100">
+                            <div class="text-sm">${r.name}</div>
+                            <div class="text-xs text-gray-500">${r.lat}, ${r.lon}</div>
+                        </button>
+                    `).join('');
+                    list.classList.remove('hidden');
+                } catch (e) {
+                    list.classList.add('hidden');
+                    list.innerHTML = '';
+                }
+            });
+
+            list.addEventListener('click', (e) => {
+                const btn = e.target.closest('button[data-lat]');
+                if (!btn) return;
+                const name = btn.getAttribute('data-name');
+                const lat = btn.getAttribute('data-lat');
+                const lon = btn.getAttribute('data-lon');
+                input.value = name;
+                latEl.value = lat;
+                lonEl.value = lon;
+                list.classList.add('hidden');
+                list.innerHTML = '';
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!list.contains(e.target) && e.target !== input) {
+                    list.classList.add('hidden');
+                }
+            });
+        }
+
+        setupCityAutocomplete('boy_city', 'boy_city_list', 'boy_lat', 'boy_lon');
+        setupCityAutocomplete('girl_city', 'girl_city_list', 'girl_lat', 'girl_lon');
+
+        // --- Submit handler: live API calls ---
+        document.getElementById('matchmakingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.textContent = 'मिलान हो रहा है...';
+            submitBtn.disabled = true;
+            document.getElementById('errorMessage').classList.add('hidden');
+
+            try {
+                const boy_dob = document.getElementById('boy_dob').value;
+                const boy_tob = document.getElementById('boy_tob').value;
+                const boy_tz = parseFloat(document.getElementById('boy_tz').value || '5.5');
+                const boy_lat = document.getElementById('boy_lat').value;
+                const boy_lon = document.getElementById('boy_lon').value;
+
+                const girl_dob = document.getElementById('girl_dob').value;
+                const girl_tob = document.getElementById('girl_tob').value;
+                const girl_tz = parseFloat(document.getElementById('girl_tz').value || '5.5');
+                const girl_lat = document.getElementById('girl_lat').value;
+                const girl_lon = document.getElementById('girl_lon').value;
+
+                const lang = document.getElementById('lang').value;
+
+                const payload = {
+                    boy_dob: formatDateToDDMMYYYY(boy_dob),
+                    boy_tob,
+                    boy_tz,
+                    boy_lat,
+                    boy_lon,
+                    girl_dob: formatDateToDDMMYYYY(girl_dob),
+                    girl_tob,
+                    girl_tz,
+                    girl_lat,
+                    girl_lon,
+                    lang
+                };
+
+                const res = await fetch(`${API_BASE}/api/matchmaking`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) {
+                    const t = await res.text();
+                    throw new Error(`Matchmaking API failed: ${res.status} ${t}`);
+                }
+                const data = await res.json();
+                displayResults(data);
+
+                // Fetch charts
+                await fetchChartImages(
+                    params.boy_dob, boy_tob, boy_lat, boy_lon,
+                    params.girl_dob, girl_tob, girl_lat, girl_lon,
+                    String(boy_tz), lang
+                );
+            } catch (err) {
+                const errBox = document.getElementById('errorMessage');
+                errBox.classList.remove('hidden');
+                errBox.querySelector('p').textContent = err.message || 'कुछ गड़बड़ है, बाद में पुनः प्रयास करें';
+            } finally {
+                submitBtn.textContent = 'दशकूट मिलान करें';
+                submitBtn.disabled = false;
+            }
+        });
+
+        async function fetchChartImages(boyDOB, boyTOB, boyLat, boyLon, girlDOB, girlTOB, girlLat, girlLon, tz, lang) {
+            const boyChartDiv = document.getElementById('boyChart');
+            const girlChartDiv = document.getElementById('girlChart');
+            boyChartDiv.innerHTML = '<p class="text-gray-500 text-center py-8">कुंडली लोड हो रही है...</p>';
+            girlChartDiv.innerHTML = '<p class="text-gray-500 text-center py-8">कुंडली लोड हो रही है...</p>';
+
+            try {
+                const common = { div: 'D1', style: 'north', color: '000000', lang };
+
+                const [rBoy, rGirl] = await Promise.all([
+                    fetch(`${API_BASE}/api/chart-image`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ dob: boyDOB, tob: boyTOB, lat: boyLat, lon: boyLon, tz: parseFloat(tz), ...common })
+                    }),
+                    fetch(`${API_BASE}/api/chart-image`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ dob: girlDOB, tob: girlTOB, lat: girlLat, lon: girlLon, tz: parseFloat(tz), ...common })
+                    })
+                ]);
+
+                if (!rBoy.ok) throw new Error('Boy chart API failed');
+                if (!rGirl.ok) throw new Error('Girl chart API failed');
+
+                const boyJson = await rBoy.json();
+                const girlJson = await rGirl.json();
+                const normalize = (svg) => {
+                  try {
+                    svg = svg.replace(/\s(width|height)="[^"]+"/g, '');
+                    if (!/viewBox=/.test(svg)) svg = svg.replace('<svg', '<svg viewBox="0 0 500 500"');
+                    if (!/preserveAspectRatio=/.test(svg)) svg = svg.replace('<svg', '<svg preserveAspectRatio="xMidYMid meet"');
+                  } catch(e) {}
+                  return svg;
+                };
+                const boySvg = normalize(boyJson.svg || boyJson.response || '');
+                const girlSvg = normalize(girlJson.svg || girlJson.response || '');
+                boyChartDiv.innerHTML = boySvg;
+                girlChartDiv.innerHTML = girlSvg;
+            } catch (error) {
+                console.error('Error fetching charts:', error);
+                boyChartDiv.innerHTML = '<p class="text-red-500 text-center py-8">चार्ट लोड करने में त्रुटि</p>';
+                girlChartDiv.innerHTML = '<p class="text-red-500 text-center py-8">चार्ट लोड करने में त्रुटि</p>';
+            }
+        }
+
+        function displayResults(data) {
+            const results = document.getElementById('results');
+            results.classList.remove('hidden');
+
+            // Display overall score with Ashtakoot equivalent
+            const score = data.response.score;
+            const ashtakoot = (Number(score) / 10) * 36;
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            scoreDisplay.innerHTML = `
+                <div class="flex items-center justify-center gap-6">
+                    <div class="text-center">
+                        <div class="text-sm text-gray-600 mb-1">दशकूट</div>
+                        <div class="inline-block px-6 py-3 rounded-full text-3xl font-bold ${
+                            score >= 7 ? 'bg-green-100 text-green-600' : 
+                            score >= 5 ? 'bg-yellow-100 text-yellow-600' : 'bg-red-100 text-red-600'
+                        }">${score}/10</div>
+                    </div>
+                    <div class="text-gray-400 text-2xl">⟷</div>
+                    <div class="text-center">
+                        <div class="text-sm text-gray-600 mb-1">अष्टकूट समतुल्य</div>
+                        <div class="inline-block px-6 py-3 rounded-full text-3xl font-bold ${
+                            score >= 7 ? 'bg-green-100 text-green-600' : 
+                            score >= 5 ? 'bg-yellow-100 text-yellow-600' : 'bg-red-100 text-red-600'
+                        }">${ashtakoot.toFixed(1)}/36</div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('botResponse').textContent = data.response.bot_response;
+
+            displayDashakootDetails(data.response);
+            displayPlanetaryDetails(data.response);
+            displayAstroDetails(data.response);
+        }
+
+        function displayDashakootDetails(response) {
+            const container = document.getElementById('dashakootDetails');
+            container.innerHTML = '';
+            
+            const dashakootKeys = ['dina', 'gana', 'mahendra', 'sthree', 'yoni', 'rasi', 'rasiathi', 'vasya', 'rajju', 'vedha'];
+            
+            dashakootKeys.forEach(key => {
+                const data = response[key];
+                if (data) {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-orange-50 transition-colors';
+                    
+                    const score = data[key];
+                    const scoreColor = score >= 0.8 ? 'text-green-600' : 
+                                     score >= 0.5 ? 'text-yellow-600' : 'text-red-600';
+                    
+                    row.innerHTML = `
+                        <td class="px-4 py-3 border border-orange-200 font-semibold text-orange-800">${data.name}</td>
+                        <td class="px-4 py-3 border border-orange-200 text-blue-700">${data.boy_star || data.boy_gana || data.boy_yoni || data.boy_rasi || data.boy_lord || data.boy_rajju}</td>
+                        <td class="px-4 py-3 border border-orange-200 text-pink-700">${data.girl_star || data.girl_gana || data.girl_yoni || data.girl_rasi || data.girl_lord || data.girl_rajju}</td>
+                        <td class="px-4 py-3 border border-orange-200 text-center">
+                            <span class="font-bold ${scoreColor}">
+                                ${score}/${data.full_score}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 border border-orange-200 text-gray-700 italic">${data.description}</td>
+                    `;
+                    
+                    container.appendChild(row);
+                }
+            });
+        }
+
+        function displayCharts(response) {
+            // Charts will be loaded via API call
+            // This function is kept for compatibility but charts are now handled by fetchChartImages
+        }
+
+        function createChartHTML(planetaryDetails, colorClass) {
+            const houses = {};
+            
+            // Group planets by house
+            Object.values(planetaryDetails).forEach(planet => {
+                if (!houses[planet.house]) {
+                    houses[planet.house] = [];
+                }
+                houses[planet.house].push(planet.name);
+            });
+            
+            const getPlanetsInHouse = (houseNum) => {
+                return houses[houseNum] ? houses[houseNum].join(', ') : '-';
+            };
+            
+            const textColor = colorClass === 'blue' ? 'text-blue-600' : 'text-pink-600';
+            const borderColor = colorClass === 'blue' ? 'border-blue-400' : 'border-pink-400';
+            const headerColor = colorClass === 'blue' ? 'text-blue-600' : 'text-pink-600';
+            const contentColor = colorClass === 'blue' ? 'text-blue-700' : 'text-pink-700';
+            const ascBgColor = colorClass === 'blue' ? 'from-blue-300 to-blue-400' : 'from-pink-300 to-pink-400';
+            const ascBorderColor = colorClass === 'blue' ? 'border-blue-600' : 'border-pink-600';
+            const ascTextColor = colorClass === 'blue' ? 'text-blue-900' : 'text-pink-900';
+            const ascTextColor2 = colorClass === 'blue' ? 'text-blue-800' : 'text-pink-800';
+            
+            return `
+                <div class="grid grid-cols-4 gap-2">
+                    <!-- Traditional Kundali Layout -->
+                    <div class="col-span-4 grid grid-cols-4 gap-1">
+                        <!-- Top row: H12, H1 (Lagna), H2, H3 -->
+                        <div class="bg-white border-2 ${borderColor} p-2 rounded text-xs text-center">
+                            <div class="font-bold ${headerColor}">12</div>
+                            <div class="${contentColor} font-semibold mt-1">${getPlanetsInHouse(12)}</div>
+                        </div>
+                        <div class="bg-gradient-to-br ${ascBgColor} border-2 ${ascBorderColor} p-2 rounded text-xs text-center font-bold">
+                            <div class="${ascTextColor}">1 लग्न</div>
+                            <div class="${ascTextColor2} mt-1">${getPlanetsInHouse(1)}</div>
+                        </div>
+                        <div class="bg-white border-2 ${borderColor} p-2 rounded text-xs text-center">
+                            <div class="font-bold ${headerColor}">2</div>
+                            <div class="${contentColor} font-semibold mt-1">${getPlanetsInHouse(2)}</div>
+                        </div>
+                        <div class="bg-white border-2 ${borderColor} p-2 rounded text-xs text-center">
+                            <div class="font-bold ${headerColor}">3</div>
+                            <div class="${contentColor} font-semibold mt-1">${getPlanetsInHouse(3)}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-span-4 grid grid-cols-4 gap-1">
+                        <!-- Second row: H11, empty, empty, H5 -->
+                        <div class="bg-white border-2 ${borderColor} p-2 rounded text-xs text-center">
+                            <div class="font-bold ${headerColor}">11</div>
+                            <div class="${contentColor} font-semibold mt-1">${getPlanetsInHouse(11)}</div>
+                        </div>
+                        <div class="bg-white border-2 ${borderColor} p-2 rounded text-xs text-center"></div>
+                        <div class="bg-white border-2 ${borderColor} p-2 rounded text-xs text-center"></div>
+                        <div class="bg-white border-2 ${borderColor} p-2 rounded text-xs text-center">
+                            <div class="font-bold ${headerColor}">5</div>
+                            <div class="${contentColor} font-semibold mt-1">${getPlanetsInHouse(5)}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-span-4 grid grid-cols-4 gap-1">
+                        <!-- Third row: H10, empty, empty, H6 -->
+                        <div class="bg-white border-2 ${borderColor} p-2 rounded text-xs text-center">
+                            <div class="font-bold ${headerColor}">10</div>
+                            <div class="${contentColor} font-semibold mt-1">${getPlanetsInHouse(10)}</div>
+                        </div>
+                        <div class="bg-white border-2 ${borderColor} p-2 rounded text-xs text-center"></div>
+                        <div class="bg-white border-2 ${borderColor} p-2 rounded text-xs text-center"></div>
+                        <div class="bg-white border-2 ${borderColor} p-2 rounded text-xs text-center">
+                            <div class="font-bold ${headerColor}">6</div>
+                            <div class="${contentColor} font-semibold mt-1">${getPlanetsInHouse(6)}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-span-4 grid grid-cols-4 gap-1">
+                        <!-- Bottom row: H9, H8, H7, empty -->
+                        <div class="bg-white border-2 ${borderColor} p-2 rounded text-xs text-center">
+                            <div class="font-bold ${headerColor}">9</div>
+                            <div class="${contentColor} font-semibold mt-1">${getPlanetsInHouse(9)}</div>
+                        </div>
+                        <div class="bg-white border-2 ${borderColor} p-2 rounded text-xs text-center">
+                            <div class="font-bold ${headerColor}">8</div>
+                            <div class="${contentColor} font-semibold mt-1">${getPlanetsInHouse(8)}</div>
+                        </div>
+                        <div class="bg-white border-2 ${borderColor} p-2 rounded text-xs text-center">
+                            <div class="font-bold ${headerColor}">7</div>
+                            <div class="${contentColor} font-semibold mt-1">${getPlanetsInHouse(7)}</div>
+                        </div>
+                        <div class="bg-white border-2 ${borderColor} p-2 rounded text-xs text-center"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayPlanetaryDetails(response) {
+            // Boy's planetary details
+            const boyPlanets = document.getElementById('boyPlanets');
+            boyPlanets.innerHTML = createPlanetaryTable(response.boy_planetary_details, 'blue');
+            
+            // Girl's planetary details
+            const girlPlanets = document.getElementById('girlPlanets');
+            girlPlanets.innerHTML = createPlanetaryTable(response.girl_planetary_details, 'pink');
+        }
+
+        function createPlanetaryTable(planetaryDetails, colorClass) {
+            const headerColor = colorClass === 'blue' ? 'bg-blue-50 text-blue-800' : 'bg-pink-50 text-pink-800';
+            const rowColor = colorClass === 'blue' ? 'hover:bg-blue-50 text-blue-700' : 'hover:bg-pink-50 text-pink-700';
+            
+            let tableHTML = `
+                <table class="w-full text-sm bg-white rounded-lg shadow-sm">
+                    <thead class="${headerColor}">
+                        <tr>
+                            <th class="px-3 py-2 text-left font-semibold">ग्रह</th>
+                            <th class="px-3 py-2 text-left font-semibold">राशि</th>
+                            <th class="px-3 py-2 text-left font-semibold">भाव</th>
+                            <th class="px-3 py-2 text-left font-semibold">नक्षत्र</th>
+                            <th class="px-3 py-2 text-left font-semibold">अंश</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            Object.values(planetaryDetails).forEach(planet => {
+                tableHTML += `
+                    <tr class="border-b border-gray-100 ${rowColor}">
+                        <td class="px-3 py-2 font-medium">${planet.name}</td>
+                        <td class="px-3 py-2 text-gray-700">${planet.zodiac}</td>
+                        <td class="px-3 py-2 text-gray-700">${planet.house}</td>
+                        <td class="px-3 py-2 text-gray-700">${planet.nakshatra}</td>
+                        <td class="px-3 py-2 text-gray-700">${planet.local_degree.toFixed(2)}°</td>
+                    </tr>
+                `;
+            });
+            
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+            
+            return tableHTML;
+        }
+
+        function displayAstroDetails(response) {
+            // Boy's astro details
+            const boyAstro = document.getElementById('boyAstro');
+            boyAstro.innerHTML = createAstroDetailsHTML(response.boy_astro_details, 'blue');
+            
+            // Girl's astro details
+            const girlAstro = document.getElementById('girlAstro');
+            girlAstro.innerHTML = createAstroDetailsHTML(response.girl_astro_details, 'pink');
+        }
+
+        function createAstroDetailsHTML(astroDetails, colorClass) {
+            const labelColor = colorClass === 'blue' ? 'text-blue-800' : 'text-pink-800';
+            const valueColor = colorClass === 'blue' ? 'text-blue-700' : 'text-pink-700';
+            const itemColor = colorClass === 'blue' ? 'text-blue-700' : 'text-pink-700';
+            const textColor = colorClass === 'blue' ? 'text-blue-600' : 'text-pink-600';
+            const borderColor = colorClass === 'blue' ? 'border-blue-200' : 'border-pink-200';
+            
+            return `
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="font-medium ${labelColor}">गण:</span>
+                            <span class="${valueColor}">${astroDetails.gana}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium ${labelColor}">योनि:</span>
+                            <span class="${valueColor}">${astroDetails.yoni}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium ${labelColor}">वश्य:</span>
+                            <span class="${valueColor}">${astroDetails.vasya}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium ${labelColor}">नाड़ी:</span>
+                            <span class="${valueColor}">${astroDetails.nadi}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium ${labelColor}">वर्ण:</span>
+                            <span class="${valueColor}">${astroDetails.varna}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium ${labelColor}">पाया:</span>
+                            <span class="${valueColor}">${astroDetails.paya}</span>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="font-medium ${labelColor}">तत्व:</span>
+                            <span class="${valueColor}">${astroDetails.tatva}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium ${labelColor}">राशि:</span>
+                            <span class="${valueColor}">${astroDetails.rasi}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium ${labelColor}">नक्षत्र:</span>
+                            <span class="${valueColor}">${astroDetails.nakshatra}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium ${labelColor}">लग्न:</span>
+                            <span class="${valueColor}">${astroDetails.ascendant_sign}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium ${labelColor}">वर्तमान दशा:</span>
+                            <span class="${valueColor}">${astroDetails.current_dasa}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 pt-4 border-t ${borderColor}">
+                    <h5 class="font-semibold ${labelColor} mb-3">शुभ तत्व</h5>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <div class="font-medium ${itemColor} mb-1">शुभ रत्न:</div>
+                            <div class="${textColor}">${astroDetails.lucky_gem.join(', ')}</div>
+                        </div>
+                        <div>
+                            <div class="font-medium ${itemColor} mb-1">शुभ अंक:</div>
+                            <div class="${textColor}">${astroDetails.lucky_num.join(', ')}</div>
+                        </div>
+                        <div>
+                            <div class="font-medium ${itemColor} mb-1">शुभ रंग:</div>
+                            <div class="${textColor}">${astroDetails.lucky_colors.join(', ')}</div>
+                        </div>
+                        <div>
+                            <div class="font-medium ${itemColor} mb-1">शुभ अक्षर:</div>
+                            <div class="${textColor}">${astroDetails.lucky_letters.join(', ')}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
+
