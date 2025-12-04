@@ -41,7 +41,7 @@ export default function AstrologerSlideshow() {
 
   return (
     <div className="relative py-12">
-      <div className="flex items-center justify-center gap-8">
+      <div className="flex items-center justify-center">
         <Button
           onClick={handlePrev}
           variant="outline"
@@ -58,8 +58,8 @@ export default function AstrologerSlideshow() {
                 key={astrologer.id}
                 className="absolute transition-all duration-500 ease-in-out"
                 style={{
-                  transform: `translateX(${offset * 360}px) scale(${offset === 0 ? 1 : 0.85})`,
-                  opacity: offset === 0 ? 1 : 0.5,
+                  transform: `translateX(${offset * 80}%) scale(${offset === 0 ? 1 : 0.7})`,
+                  opacity: offset === 0 ? 1 : 0.3,
                   zIndex: offset === 0 ? 10 : 1,
                 }}
               >

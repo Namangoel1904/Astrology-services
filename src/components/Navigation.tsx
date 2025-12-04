@@ -30,7 +30,7 @@ export default function Navigation() {
               </Button>
             </Link>
             <Button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border border-white/10" asChild>
-              <a href="tel:9767773236">संपर्क करें</a>
+              <a href="mailto:astrojyoti8@gmail.com">संपर्क करें</a>
             </Button>
           </div>
         </div>

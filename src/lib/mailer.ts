@@ -9,6 +9,7 @@ const {
   SMTP_PASS,
   BOOKING_FROM_EMAIL,
   BOOKING_REPLY_TO,
+  SEND_ASTRO_EMAILS,
 } = process.env;
 
 function getTransporter() {
@@ -41,7 +42,7 @@ export async function sendBookingEmails(booking: BookingRecord) {
   const userBody = `
 नमस्कार ${booking.clientName},
 
-आपकी बुकिंग सफल हुई!
+आपकी ज्योतिष परामर्श बुकिंग सफल हुई है। विवरण इस प्रकार है:
 
 ज्योतिषी: ${booking.astrologerName}
 तारीख: ${booking.appointmentDate}
@@ -49,7 +50,13 @@ export async function sendBookingEmails(booking: BookingRecord) {
 अवधि: ${booking.durationMinutes} मिनट
 विषय: ${booking.topic}
 
-आपको अगले ईमेल में Zoom कॉल की लिंक भेजी जाएगी। कृपया निर्धारित समय से 5 मिनट पहले तैयार रहें।
+जन्म विवरण:
+- जन्म तिथि: ${booking.dob}
+- जन्म समय: ${booking.tob}
+- जन्म स्थान: ${booking.birthplace}
+
+कृपया आगे की प्रक्रिया के लिए यह मेल सुरक्षित रखें।
+आपको Zoom कॉल / मीटिंग लिंक और अंतिम निर्देश अलग ईमेल से भेजे जाएंगे, कृपया अपना इनबॉक्स (और स्पैम/प्रमोशन टैब) अवश्य जांचें।
 
 शुभेच्छा,
 ज्योतिष परामर्श टीम
@@ -58,18 +65,23 @@ export async function sendBookingEmails(booking: BookingRecord) {
   const astrologerBody = `
 प्रिय ${astrologer?.name ?? booking.astrologerName},
 
-आपके लिए नई बुकिंग आयी है।
+आपके लिए नई ज्योतिष परामर्श बुकिंग आयी है। विवरण:
 
 ग्राहक: ${booking.clientName}
 ईमेल: ${booking.email}
 फ़ोन: ${booking.phone}
-जन्म तिथि: ${booking.dob}
-जन्म समय: ${booking.tob}
-विषय: ${booking.topic}
+
+जन्म विवरण:
+- जन्म तिथि: ${booking.dob}
+- जन्म समय: ${booking.tob}
+- जन्म स्थान: ${booking.birthplace}
+
 तारीख: ${booking.appointmentDate}
 समय: ${booking.appointmentSlot}
+अवधि: ${booking.durationMinutes} मिनट
+विषय: ${booking.topic}
 
-कृपया Zoom लिंक साझा करके बुकिंग कन्फर्म करें.
+कृपया ग्राहकाशी संपर्क साधून / Zoom लिंक शेयर करून बुकिंग कन्फर्म करें.
 `;
 
   if (!transporter) {
@@ -87,7 +99,8 @@ export async function sendBookingEmails(booking: BookingRecord) {
   });
 
   const astrologerEmail = astrologer?.privateDetails.email;
-  if (astrologerEmail) {
+  const shouldNotifyAstrologer = SEND_ASTRO_EMAILS !== "false";
+  if (astrologerEmail && shouldNotifyAstrologer) {
     await transporter.sendMail({
       from,
       to: astrologerEmail,

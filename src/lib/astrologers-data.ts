@@ -5,6 +5,22 @@ export interface SlotTemplate {
   slots: string[];
 }
 
+function generateSlots(start: string, end: string) {
+  const toMinutes = (t: string) => {
+    const [h, m] = t.split(":").map(Number);
+    return h * 60 + m;
+  };
+  const startMin = toMinutes(start);
+  const endMin = toMinutes(end);
+  const slots: string[] = [];
+  for (let m = startMin; m + 30 <= endMin; m += 30) {
+    const h = Math.floor(m / 60);
+    const mm = m % 60;
+    slots.push(`${h.toString().padStart(2, "0")}:${mm.toString().padStart(2, "0")}`);
+  }
+  return slots;
+}
+
 export interface AstrologerProfile {
     id: string;
   slug: string;
@@ -35,9 +51,7 @@ export interface AstrologerProfile {
 }
 
 const DEFAULT_TEMPLATE: SlotTemplate[] = [
-  { day: 1, slots: ["09:00", "11:00", "14:00", "17:00", "19:00"] },
-  { day: 3, slots: ["10:00", "12:00", "15:00", "18:30"] },
-  { day: 5, slots: ["08:30", "11:30", "14:30", "16:30"] },
+  { day: 1, slots: generateSlots("09:00", "12:00") },
 ];
 
 export const astrologers: AstrologerProfile[] = [
@@ -54,7 +68,7 @@ export const astrologers: AstrologerProfile[] = [
     shortBio:
       "७ वर्षांचा अनुभव असलेल्या, ‘श्री गुरुकृपा ज्योती संस्था’च्या संचालिका व पुरस्कारप्राप्त ज्योतिष अभ्यासिका.",
     longBio:
-      "गेल्यास सात वर्षांपासून ज्योतिष क्षेत्रात कार्यरत. महाराष्ट्र ज्योतिष परिषद मान्यता प्राप्त श्री गुरुकृपा ज्योती संस्थेच्या संचालिका. संस्थेमार्फत शेकडो विद्यार्थ्यांना ज्योतिष प्रशिक्षण. आजवर हजारो लोकांना ज्योतिष शास्त्राच्या माध्यमातून मार्गदर्शन. वैदिक ज्योतिष, कृष्णमूर्ती पद्धती, अंकशास्त्र, अष्टक वर्ग वास्तुशास्त्र अभ्यासक. अनेक ज्योतिष अधिवेशनात व्याख्याने. ज्योतिश्री तसेच अहिल्या रत्न पुरस्कार प्राप्त.",
+      "गेल्या सात वर्षांपासून ज्योतिष क्षेत्रात कार्यरत. महाराष्ट्र ज्योतिष परिषद मान्यता प्राप्त श्री गुरुकृपा ज्योतिष संस्थेच्या संचालिका. संस्थेमार्फत शेकडो विद्यार्थ्यांना ज्योतिष प्रशिक्षण. आजवर हजारो लोकांना ज्योतिषशास्त्राच्या माध्यमातून मार्गदर्शन. वैदिक ज्योतिष, कृष्णमूर्ती पद्धती, अंकशास्त्र, अष्टकवर्ग, वास्तुशास्त्र अभ्यासक. अनेक ज्योतिष अधिवेशनात व्याख्याने. ज्योतिश्री तसेच अहिल्यारत्न पुरस्कार प्राप्त.",
     languages: ["मराठी", "हिंदी", "English"],
     fee: 1100,
     sessionMinutes: 30,
@@ -65,7 +79,16 @@ export const astrologers: AstrologerProfile[] = [
       "शेकडो विद्यार्थ्यांना ज्योतिष प्रशिक्षण",
       "हजारो लोकांना वैदिक मार्गदर्शन",
     ],
-    availabilityTemplate: DEFAULT_TEMPLATE,
+    // Astro ShriPriya – everyday 11:00 to 20:00, 30-minute slots
+    availabilityTemplate: [
+      { day: 0, slots: generateSlots("11:00", "20:00") },
+      { day: 1, slots: generateSlots("11:00", "20:00") },
+      { day: 2, slots: generateSlots("11:00", "20:00") },
+      { day: 3, slots: generateSlots("11:00", "20:00") },
+      { day: 4, slots: generateSlots("11:00", "20:00") },
+      { day: 5, slots: generateSlots("11:00", "20:00") },
+      { day: 6, slots: generateSlots("11:00", "20:00") },
+    ],
     privateDetails: {
       dob: "1983-05-19",
       gender: "Female",
@@ -78,9 +101,9 @@ export const astrologers: AstrologerProfile[] = [
     },
   },
   {
-    id: "priti-prashant-chandrashekhar",
-    slug: "priti-prashant-chandrashekhar",
-    name: "Priti Prashant Chandrashekhar",
+    id: "Astrologer Aacharya Shivangi",
+    slug: "Astrologer-Aacharya-Shivangi",
+    name: "Astrologer Aacharya Shivangi",
     headline: "6+ वर्ष का अनुभव • वैदिक ज्योतिष मार्गदर्शक",
     topicExpertise: "वैदिक ज्योतिष",
     experienceRange: "6–10 वर्षे",
@@ -99,7 +122,37 @@ export const astrologers: AstrologerProfile[] = [
       "टॅरो व अंक ज्योतिष सर्टिफाइड",
       "6+ वर्षे अनुभव",
     ],
-    availabilityTemplate: DEFAULT_TEMPLATE,
+    // Astrologer Aacharya Shivangi – everyday 14:00–17:00 and 19:00–22:00
+    availabilityTemplate: [
+      {
+        day: 0,
+        slots: [...generateSlots("14:00", "17:00"), ...generateSlots("19:00", "22:00")],
+      },
+      {
+        day: 1,
+        slots: [...generateSlots("14:00", "17:00"), ...generateSlots("19:00", "22:00")],
+      },
+      {
+        day: 2,
+        slots: [...generateSlots("14:00", "17:00"), ...generateSlots("19:00", "22:00")],
+      },
+      {
+        day: 3,
+        slots: [...generateSlots("14:00", "17:00"), ...generateSlots("19:00", "22:00")],
+      },
+      {
+        day: 4,
+        slots: [...generateSlots("14:00", "17:00"), ...generateSlots("19:00", "22:00")],
+      },
+      {
+        day: 5,
+        slots: [...generateSlots("14:00", "17:00"), ...generateSlots("19:00", "22:00")],
+      },
+      {
+        day: 6,
+        slots: [...generateSlots("14:00", "17:00"), ...generateSlots("19:00", "22:00")],
+      },
+    ],
     privateDetails: {
       dob: "1984-08-25",
       gender: "Female",
@@ -127,12 +180,17 @@ export const astrologers: AstrologerProfile[] = [
       "(1) ज्योतिष वाचस्पति, (2) ज्योतिष अलंकार, (3) ज्योतिष मार्तंड. जीवनातील प्रत्येक दिशेसाठी वैदिक मार्गदर्शनाचा समृद्ध अनुभव.",
     languages: ["मराठी", "हिंदी"],
     fee: 1100,
-    sessionMinutes: 45,
+    sessionMinutes: 30,
     credentials: ["ज्योतिष वाचस्पति", "ज्योतिष अलंकार", "ज्योतिष मार्तंड"],
+    // Dr. Gauri Gopinath Pol – everyday 17:00 to 21:00
     availabilityTemplate: [
-      { day: 2, slots: ["08:30", "10:30", "12:30", "15:30"] },
-      { day: 4, slots: ["09:30", "11:30", "14:00", "17:00"] },
-      { day: 6, slots: ["10:00", "12:00", "16:00", "18:00"] },
+      { day: 0, slots: generateSlots("17:00", "21:00") },
+      { day: 1, slots: generateSlots("17:00", "21:00") },
+      { day: 2, slots: generateSlots("17:00", "21:00") },
+      { day: 3, slots: generateSlots("17:00", "21:00") },
+      { day: 4, slots: generateSlots("17:00", "21:00") },
+      { day: 5, slots: generateSlots("17:00", "21:00") },
+      { day: 6, slots: generateSlots("17:00", "21:00") },
     ],
     privateDetails: {
       dob: "1969-03-25",
@@ -161,17 +219,22 @@ export const astrologers: AstrologerProfile[] = [
       "Jyotish Praveen ,Jyotish visharad ,Jyotish Bhaskar 'A ,grade Diploma in AshtakVarg. वैदिक ज्योतिषातील प्रत्यक्ष अनुभवासह विद्यार्थ्यांना आणि ग्राहकालाही मार्गदर्शन.",
     languages: ["मराठी", "हिंदी", "English"],
     fee: 1100,
-    sessionMinutes: 45,
+    sessionMinutes: 30,
     credentials: [
       "Jyotish Praveen",
       "Jyotish Visharad",
       "Jyotish Bhaskar 'A",
       "Diploma in AshtakVarg",
     ],
+    // Astrologer Acharya Devyani – everyday 09:00 to 13:00
     availabilityTemplate: [
-      { day: 1, slots: ["08:00", "10:00", "13:00", "16:00"] },
-      { day: 3, slots: ["09:30", "11:30", "14:30", "18:00"] },
-      { day: 5, slots: ["10:30", "12:30", "15:30"] },
+      { day: 0, slots: generateSlots("09:00", "13:00") },
+      { day: 1, slots: generateSlots("09:00", "13:00") },
+      { day: 2, slots: generateSlots("09:00", "13:00") },
+      { day: 3, slots: generateSlots("09:00", "13:00") },
+      { day: 4, slots: generateSlots("09:00", "13:00") },
+      { day: 5, slots: generateSlots("09:00", "13:00") },
+      { day: 6, slots: generateSlots("09:00", "13:00") },
     ],
     privateDetails: {
       dob: "1963-07-29",
@@ -187,7 +250,7 @@ export const astrologers: AstrologerProfile[] = [
   {
     id: "nilima-deepak-bauskar",
     slug: "nilima-deepak-bauskar",
-    name: "Vedatgya Acharya Shaktidevi",
+    name: "Vedatagya Acharya Shaktidevi",
     headline: "रेट्रो-ज्योतिष अभ्यासू • शिक्षिका व वैदिक मार्गदर्शक",
     topicExpertise: "वैदिक ज्योतिष",
     experienceRange: "3–5 वर्षे",
@@ -207,7 +270,13 @@ export const astrologers: AstrologerProfile[] = [
       "Jyotish Bhaskar 'A",
       "Destiny Manager - Abhijit Pratishthan",
     ],
-    availabilityTemplate: DEFAULT_TEMPLATE,
+    // Vedatagya Acharya Shaktidevi – Mon, Wed, Thu, Fri 12:00 to 17:00
+    availabilityTemplate: [
+      { day: 1, slots: generateSlots("12:00", "17:00") },
+      { day: 3, slots: generateSlots("12:00", "17:00") },
+      { day: 4, slots: generateSlots("12:00", "17:00") },
+      { day: 5, slots: generateSlots("12:00", "17:00") },
+    ],
     privateDetails: {
       dob: "1978-03-10",
       gender: "Female",
@@ -235,17 +304,32 @@ export const astrologers: AstrologerProfile[] = [
       "मी सौ. स्वाती बाजीराव काकुळते , मी गेल्या दहा अकरा वर्षांपासून ज्योतिषशास्त्र शिकून जातकांना मार्गदर्शन करते. ... दुःखी व्यक्तीच्या चेहऱ्यावर परत हसू आणणे हेच ध्येय.",
     languages: ["मराठी", "हिंदी"],
     fee: 1100,
-    sessionMinutes: 45,
+    sessionMinutes: 30,
     credentials: [
       "ज्योतिष प्रवीण",
       "ज्योतिष विशारद",
       "ज्योतिष भास्कर",
       "ज्योतिष विद्यावाचस्पती",
     ],
+    // Swati Bajirao Kakulte –
+    // Mon, Wed, Fri, Sat: 11:00–16:00
+    // Sun, Thu: 08:00–22:00
+    // Tue: 14:00–18:00
     availabilityTemplate: [
-      { day: 0, slots: ["09:00", "11:00", "13:30", "16:30"] },
-      { day: 2, slots: ["08:30", "10:30", "15:00", "18:00"] },
-      { day: 4, slots: ["09:30", "12:30", "17:00"] },
+      // Sunday
+      { day: 0, slots: generateSlots("08:00", "22:00") },
+      // Monday
+      { day: 1, slots: generateSlots("11:00", "16:00") },
+      // Tuesday
+      { day: 2, slots: generateSlots("14:00", "18:00") },
+      // Wednesday
+      { day: 3, slots: generateSlots("11:00", "16:00") },
+      // Thursday
+      { day: 4, slots: generateSlots("08:00", "22:00") },
+      // Friday
+      { day: 5, slots: generateSlots("11:00", "16:00") },
+      // Saturday
+      { day: 6, slots: generateSlots("11:00", "16:00") },
     ],
     privateDetails: {
       dob: "1980-04-23",
@@ -275,10 +359,36 @@ export const astrologers: AstrologerProfile[] = [
     fee: 1100,
     sessionMinutes: 30,
     credentials: ["Vedic Astrology Practitioner"],
+    // Shakuntala Rajesh Dangat – everyday 14:00–17:00 and 21:00–23:00
     availabilityTemplate: [
-      { day: 1, slots: ["07:30", "09:30", "11:30", "14:30"] },
-      { day: 3, slots: ["08:00", "10:00", "13:00", "15:00"] },
-      { day: 6, slots: ["09:00", "11:00", "17:00"] },
+      {
+        day: 0,
+        slots: [...generateSlots("14:00", "17:00"), ...generateSlots("21:00", "23:00")],
+      },
+      {
+        day: 1,
+        slots: [...generateSlots("14:00", "17:00"), ...generateSlots("21:00", "23:00")],
+      },
+      {
+        day: 2,
+        slots: [...generateSlots("14:00", "17:00"), ...generateSlots("21:00", "23:00")],
+      },
+      {
+        day: 3,
+        slots: [...generateSlots("14:00", "17:00"), ...generateSlots("21:00", "23:00")],
+      },
+      {
+        day: 4,
+        slots: [...generateSlots("14:00", "17:00"), ...generateSlots("21:00", "23:00")],
+      },
+      {
+        day: 5,
+        slots: [...generateSlots("14:00", "17:00"), ...generateSlots("21:00", "23:00")],
+      },
+      {
+        day: 6,
+        slots: [...generateSlots("14:00", "17:00"), ...generateSlots("21:00", "23:00")],
+      },
     ],
     privateDetails: {
       dob: "1977-10-04",

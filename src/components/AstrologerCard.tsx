@@ -14,8 +14,8 @@ interface AstrologerCardProps {
 
 export default function AstrologerCard({ astrologer }: AstrologerCardProps) {
   return (
-    <Card className="group overflow-hidden border-2 border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/50 astro-card w-[320px] flex-shrink-0">
-      <div className="relative h-[400px] overflow-hidden">
+    <Card className="group overflow-hidden border-2 border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/50 astro-card w-[90vw] max-w-[320px] flex-shrink-0">
+      <div className="relative h-[350px] sm:h-[400px] overflow-hidden">
         <Image
           src={astrologer.avatar}
           alt={astrologer.name}

@@ -92,6 +92,7 @@ export async function POST(req: NextRequest) {
       dob: client.dob,
       tob: client.tob,
       topic: client.topic,
+      birthplace: client.birthplace,
       appointmentDate: date,
       appointmentSlot: slot,
       durationMinutes: astrologer.sessionMinutes,
@@ -101,7 +102,12 @@ export async function POST(req: NextRequest) {
       orderId,
     });
 
-    await sendBookingEmails(booking);
+    try {
+      await sendBookingEmails(booking);
+    } catch (mailError) {
+      console.error("Email dispatch failed", mailError);
+      // Proceed without failing the booking so payment + booking stay confirmed.
+    }
 
     return NextResponse.json({ booking }, { headers: HEADERS });
   } catch (error: any) {

@@ -14,6 +14,7 @@ export interface BookingRecord {
   dob: string;
   tob: string;
   topic: string;
+  birthplace: string;
   appointmentDate: string; // YYYY-MM-DD
   appointmentSlot: string; // HH:mm
   durationMinutes: number;

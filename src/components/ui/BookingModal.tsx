@@ -41,6 +41,7 @@ interface CreateOrderResponse {
     dob: string;
     tob: string;
     topic: string;
+    birthplace: string;
   };
 }
 
@@ -50,7 +51,12 @@ const today = () => {
   return d;
 };
 
-const formatISODate = (date: Date) => date.toISOString().split("T")[0];
+const formatISODate = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
 export default function BookingModal({
   open,
@@ -71,10 +77,22 @@ export default function BookingModal({
     dob: "",
     tob: "",
     topic: "",
+    birthplace: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [successId, setSuccessId] = useState("");
+  const [successBooking, setSuccessBooking] = useState<{
+    clientName: string;
+    email: string;
+    phone: string;
+    dob: string;
+    tob: string;
+    birthplace: string;
+    topic: string;
+    appointmentDate: string;
+    appointmentSlot: string;
+  } | null>(null);
   const [razorpayReady, setRazorpayReady] = useState(false);
 
   useEffect(() => {
@@ -136,9 +154,9 @@ export default function BookingModal({
       dob: "",
       tob: "",
       topic: "",
+      birthplace: "",
     });
     setSelectedSlot("");
-    setSuccessId("");
     setError("");
     setAppointmentDate(today());
   };
@@ -148,7 +166,15 @@ export default function BookingModal({
       setError("कृपया समय स्लॉट चुनें");
       return;
     }
-    if (!form.clientName || !form.email || !form.phone || !form.dob || !form.tob || !form.topic) {
+    if (
+      !form.clientName ||
+      !form.email ||
+      !form.phone ||
+      !form.dob ||
+      !form.tob ||
+      !form.topic ||
+      !form.birthplace
+    ) {
       setError("कृपया सभी विवरण भरें");
       return;
     }
@@ -167,27 +193,30 @@ export default function BookingModal({
         dob: form.dob,
         tob: form.tob,
         topic: form.topic,
+        birthplace: form.birthplace,
       };
       const res = await fetch("/api/bookings/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const data: CreateOrderResponse = await res.json();
+      const json = (await res.json()) as CreateOrderResponse | { error?: string };
       if (!res.ok) {
-        throw new Error(data?.["error"] || "ऑर्डर नहीं बन पाया");
+        throw new Error((json as any)?.error || "ऑर्डर नहीं बन पाया");
       }
       if (!(window as any).Razorpay || !razorpayReady) {
         throw new Error("भुगतान विंडो उपलब्ध नहीं है");
       }
 
       const options = {
-        key: data.razorpayKey,
-        amount: data.amount,
-        currency: data.currency,
+        key: (json as CreateOrderResponse).razorpayKey,
+        amount: (json as CreateOrderResponse).amount,
+        currency: (json as CreateOrderResponse).currency,
         name: astrologerName,
-        description: `Consultation (${data.appointment.date} • ${data.appointment.slot})`,
-        order_id: data.orderId,
+        description: `Consultation (${
+          (json as CreateOrderResponse).appointment.date
+        } • ${(json as CreateOrderResponse).appointment.slot})`,
+        order_id: (json as CreateOrderResponse).orderId,
         prefill: {
           name: form.clientName,
           email: form.email,
@@ -203,10 +232,10 @@ export default function BookingModal({
                 paymentId: response.razorpay_payment_id,
                 signature: response.razorpay_signature,
                 astrologerId,
-                date: data.appointment.date,
-                slot: data.appointment.slot,
-                amount: data.amount,
-                currency: data.currency,
+                date: (json as CreateOrderResponse).appointment.date,
+                slot: (json as CreateOrderResponse).appointment.slot,
+                amount: (json as CreateOrderResponse).amount,
+                currency: (json as CreateOrderResponse).currency,
                 client: payload,
               }),
             });
@@ -215,6 +244,17 @@ export default function BookingModal({
               throw new Error(confirmJson?.error || "बुकिंग सेव नहीं हुई");
             }
             setSuccessId(confirmJson.booking.id);
+            setSuccessBooking({
+              clientName: confirmJson.booking.clientName,
+              email: confirmJson.booking.email,
+              phone: confirmJson.booking.phone,
+              dob: confirmJson.booking.dob,
+              tob: confirmJson.booking.tob,
+              birthplace: confirmJson.booking.birthplace,
+              topic: confirmJson.booking.topic,
+              appointmentDate: confirmJson.booking.appointmentDate,
+              appointmentSlot: confirmJson.booking.appointmentSlot,
+            });
             setSubmitting(false);
             resetState();
           } catch (confirmError: any) {
@@ -311,7 +351,7 @@ export default function BookingModal({
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <Label className="text-sm">पूरा नाम</Label>
                   <Input value={form.clientName} onChange={handleInput("clientName")} placeholder="अपना नाम लिखें" required/>
@@ -332,7 +372,16 @@ export default function BookingModal({
                   <Label className="text-sm">जन्म समय</Label>
                   <Input type="time" value={form.tob} onChange={handleInput("tob")} required/>
                 </div>
-                <div className="md:col-span-2">
+                <div>
+                  <Label className="text-sm">जन्म स्थान</Label>
+                  <Input
+                    value={form.birthplace}
+                    onChange={handleInput("birthplace")}
+                    placeholder="शहर / गाँव का नाम"
+                    required
+                  />
+                </div>
+                <div className="md:col-span-3">
                   <Label className="text-sm">चर्चा का विषय</Label>
                   <Textarea
                     value={form.topic}
@@ -375,16 +424,46 @@ export default function BookingModal({
             </div>
           </>
         ) : (
-          <div className="py-10 text-center space-y-3">
+          <div className="py-10 space-y-4 text-center">
             <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto" />
             <h3 className="text-2xl font-bold">बुकिंग सफल!</h3>
             <p className="text-muted-foreground">
               बुकिंग आईडी: <span className="font-semibold">{successId}</span>
             </p>
-            <p className="text-sm text-muted-foreground">
-              आपको और {astrologerName} को एक पुष्टी ईमेल भेज दिया गया है। Zoom लिंक अगले मेल में साझा किया जाएगा।
+            {successBooking && (
+              <div className="max-w-xl mx-auto text-left bg-black/40 border border-green-500/40 rounded-xl p-4 text-sm space-y-1">
+                <p>
+                  <span className="text-purple-300">ग्राहक:</span>{" "}
+                  {successBooking.clientName}
+                </p>
+                <p>
+                  <span className="text-purple-300">तिथि:</span>{" "}
+                  {new Date(successBooking.appointmentDate).toLocaleDateString("hi-IN")}
+                </p>
+                <p>
+                  <span className="text-purple-300">स्लॉट:</span>{" "}
+                  {successBooking.appointmentSlot}
+                </p>
+                <p>
+                  <span className="text-purple-300">जन्म विवरण:</span>{" "}
+                  {successBooking.dob} • {successBooking.tob} •{" "}
+                  {successBooking.birthplace}
+                </p>
+                <p>
+                  <span className="text-purple-300">संपर्क:</span>{" "}
+                  {successBooking.phone} • {successBooking.email}
+                </p>
+                <p>
+                  <span className="text-purple-300">विषय:</span>{" "}
+                  {successBooking.topic}
+                </p>
+              </div>
+            )}
+            <p className="text-sm text-muted-foreground max-w-xl mx-auto">
+              कृपया आगे की प्रक्रिया के लिए अपना ईमेल अवश्य देखें। आपको और {astrologerName} को
+              पुष्टि मेल भेज दी गई है, जिसमें आगे के निर्देश दिए रहेंगे।
             </p>
-            <Button onClick={() => onOpenChange(false)} className="mt-4">
+            <Button onClick={() => onOpenChange(false)} className="mt-2">
               विंडो बंद करें
             </Button>
           </div>

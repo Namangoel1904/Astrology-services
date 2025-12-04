@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Sparkles, Star, Users, Clock, Shield } from "lucide-react";
+import { Sparkles, Star, Clock, Shield } from "lucide-react";
 import AstrologerSlideshow from "@/components/AstrologerSlideshow";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -14,18 +14,18 @@ export default function LandingPage() {
 
       <Hero
         title="जहां ज्योतिष मिलता है आधुनिक तकनीक से।"
-        description="एक न्यूरल कैनवास के साथ आधुनिक हीरो — सटीक, सुरुचिपूर्ण और प्रभावशाली। React, Three.js और कस्टम CPPN shader से निर्मित।"
+        description="एक न्यूरल कैनवास के साथ आधुनिक हीरो — सटीक, सुरुचिपूर्ण और प्रभावशाली। React, Three.js और कस्टम CPPN shader से निर्मित."
         badgeText="Generative Surfaces"
         badgeLabel="New"
         ctaButtons={[
-          { text: "अभी शुरू करें", href: "#get-started", primary: true },
+          { text: "अभी शुरू करें", href: "#astrologer-section", primary: true },
           { text: "शोकेस देखें", href: "#showcase" },
         ]}
         microDetails={["सुक्ष्म मोशन", "रेस्पॉन्सिव", "हाई-परफॉर्मेंस"]}
       />
 
       {/* Astrologers Section */}
-      <section className="py-16 px-4 bg-gradient-to-b from-purple-50/50 to-transparent dark:from-purple-950/20">
+      <section id="astrologer-section" className="py-16 px-4 bg-gradient-to-b from-purple-50/50 to-transparent dark:from-purple-950/20">
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">
@@ -49,6 +49,7 @@ export default function LandingPage() {
         </div>
       </section>
 
+
       {/* Features Section */}
       <section className="py-16 px-4">
         <div className="container mx-auto">
@@ -59,7 +60,14 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="text-center p-6 rounded-xl bg-gradient-to-b from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border border-purple-200 dark:border-purple-800">
+            <a
+              href="#astrologer-section"
+              className="group text-center p-6 rounded-xl bg-gradient-to-b from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border border-purple-200 dark:border-purple-800 cursor-pointer block"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById("astrologer-section")?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
               <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Star className="w-8 h-8 text-white" />
               </div>
@@ -69,7 +77,14 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="text-center p-6 rounded-xl bg-gradient-to-b from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border border-purple-200 dark:border-purple-800">
+            <a
+              href="#astrologer-section"
+              className="group text-center p-6 rounded-xl bg-gradient-to-b from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border border-purple-200 dark:border-purple-800 cursor-pointer block"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById("astrologer-section")?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
               <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Shield className="w-8 h-8 text-white" />
               </div>
@@ -79,7 +94,14 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="text-center p-6 rounded-xl bg-gradient-to-b from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border border-purple-200 dark:border-purple-800">
+            <a
+              href="#astrologer-section"
+              className="group text-center p-6 rounded-xl bg-gradient-to-b from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border border-purple-200 dark:border-purple-800 cursor-pointer block"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById("astrologer-section")?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
               <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Clock className="w-8 h-8 text-white" />
               </div>

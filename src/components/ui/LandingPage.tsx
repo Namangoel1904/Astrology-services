@@ -20,7 +20,7 @@ export default function LandingPage() {
             </span>
           </>
         }
-        description="Dr. Jyoti Joshi के मार्गदर्शन में प्रशिक्षित 6+ अनुभवी महिला ज्योतिषी अब ऑनलाइन उपलब्ध। Razorpay भुगतान, मेल पुष्टिकरण और सुरक्षित बुकिंग."
+        description="Dr. Jyoti Joshi के मार्गदर्शन में प्रशिक्षित ज्योतिषाचार्य अब ऑनलाइन उपलब्ध। Razorpay भुगतान, मेल पुष्टिकरण और सुरक्षित बुकिंग."
         badgeText="सत्यापित वैदिक विशेषज्ञ"
         badgeLabel="Trusted"
         ctaButtons={[

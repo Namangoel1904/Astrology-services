@@ -47,6 +47,8 @@ export default async function DashboardPage() {
             <thead className="bg-purple-900/40 text-purple-100">
               <tr>
                 <th className="py-3 px-4 text-left">ग्राहक</th>
+                <th className="py-3 px-4 text-left">संपर्क</th>
+                <th className="py-3 px-4 text-left">जन्म विवरण</th>
                 <th className="py-3 px-4 text-left">तिथि</th>
                 <th className="py-3 px-4 text-left">स्लॉट</th>
                 {isAdmin && <th className="py-3 px-4 text-left">Astrologer</th>}
@@ -57,7 +59,10 @@ export default async function DashboardPage() {
             <tbody>
               {bookings.length === 0 ? (
                 <tr>
-                  <td className="py-6 px-4 text-center text-purple-200" colSpan={isAdmin ? 6 : 5}>
+                  <td
+                    className="py-6 px-4 text-center text-purple-200"
+                    colSpan={isAdmin ? 8 : 7}
+                  >
                     अभी तक कोई बुकिंग नहीं
                   </td>
                 </tr>
@@ -72,7 +77,15 @@ export default async function DashboardPage() {
                     <tr key={booking.id} className="border-t border-purple-500/10">
                       <td className="py-3 px-4">
                         <div className="font-semibold">{booking.clientName}</div>
-                        <div className="text-xs text-purple-300">{booking.phone}</div>
+                      </td>
+                      <td className="py-3 px-4 text-xs text-purple-200">
+                        <div>{booking.phone}</div>
+                        <div>{booking.email}</div>
+                      </td>
+                      <td className="py-3 px-4 text-xs text-purple-200">
+                        <div>{booking.dob}</div>
+                        <div>{booking.tob}</div>
+                        <div>{booking.birthplace}</div>
                       </td>
                       <td className="py-3 px-4">
                         {new Date(booking.appointmentDate).toLocaleDateString("hi-IN")}
@@ -81,7 +94,16 @@ export default async function DashboardPage() {
                       {isAdmin && (
                         <td className="py-3 px-4">{booking.astrologerName}</td>
                       )}
-                      <td className="py-3 px-4 truncate max-w-[200px]">{booking.topic}</td>
+                      <td className="py-3 px-4 align-top max-w-[260px]">
+                        <details className="group text-xs text-purple-100">
+                          <summary className="cursor-pointer truncate max-w-[240px] list-none">
+                            {booking.topic}
+                          </summary>
+                          <div className="mt-1 whitespace-pre-wrap leading-snug">
+                            {booking.topic}
+                          </div>
+                        </details>
+                      </td>
                       <td className="py-3 px-4 align-top">
                         <BookingStatusCell
                           bookingId={booking.id}

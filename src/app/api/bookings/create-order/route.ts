@@ -79,10 +79,15 @@ export async function POST(req: NextRequest) {
     }
 
     const amount = astrologer.fee * 100;
+    // Razorpay receipt must be <= 40 characters
+    const baseReceipt = `ASTRO-${astrologer.id}-${Date.now()}`;
+    const receipt =
+      baseReceipt.length > 40 ? baseReceipt.slice(0, 40) : baseReceipt;
+
     const order = await razorpay.orders.create({
       amount,
       currency: "INR",
-      receipt: `ASTRO-${astrologer.id}-${Date.now()}`,
+      receipt,
       notes: {
         astrologerId: astrologer.id,
         date,
