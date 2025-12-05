@@ -212,12 +212,12 @@ export const astrologers: AstrologerProfile[] = [
     experienceRange: "10+ वर्षे",
     rating: 4.95,
     totalConsultations: 1400,
-    avatar: "https://drjyotijoshi.com/wp-content/uploads/2025/11/4.jpg?auto=format&fit=crop&w=800&q=80&sat=-60&blend-mode=multiply",
+    avatar: "https://drjyotijoshi.com/wp-content/uploads/2025/12/WhatsApp-Image-2025-12-04-at-19.43.32.jpeg?auto=format&fit=crop&w=800&q=80&sat=-60&blend-mode=multiply",
     shortBio:
       "Jyotish Praveen • Jyotish Visharad • Diploma in Ashtakvarg | व्यावहारिक उपाय",
     longBio:
       "Jyotish Praveen ,Jyotish visharad ,Jyotish Bhaskar 'A ,grade Diploma in AshtakVarg. वैदिक ज्योतिषातील प्रत्यक्ष अनुभवासह विद्यार्थ्यांना आणि ग्राहकालाही मार्गदर्शन.",
-    languages: ["मराठी", "हिंदी", "English"],
+    languages: ["मराठी", "हिंदी"],
     fee: 1100,
     sessionMinutes: 30,
     credentials: [
@@ -256,7 +256,7 @@ export const astrologers: AstrologerProfile[] = [
     experienceRange: "3–5 वर्षे",
       rating: 4.7,
     totalConsultations: 1850,
-    avatar: "https://drjyotijoshi.com/wp-content/uploads/2025/11/3.jpg?auto=format&fit=crop&w=800&q=80",
+    avatar: "https://drjyotijoshi.com/wp-content/uploads/2025/12/WhatsApp-Image-2025-12-04-at-22.01.43.jpeg?auto=format&fit=crop&w=800&q=80",
     shortBio:
       "Jyotish Praveen • Jyotish Visharad • Destiny Manager | ऑनलाइन व ऑफलाइन मार्गदर्शन",
     longBio:
