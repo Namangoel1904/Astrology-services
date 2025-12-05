@@ -5,6 +5,7 @@ import ErrorReporter from "@/components/ErrorReporter";
 import Script from "next/script";
 
 const GTM_ID = "GTM-M34T7L2X";
+const GA_MEASUREMENT_ID = "G-Y61HQXKZKW";
 
 // Get the base URL for Open Graph images
 function getBaseUrl() {
