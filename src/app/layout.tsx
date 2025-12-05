@@ -4,10 +4,51 @@ import VisualEditsMessenger from "../visual-edits/VisualEditsMessenger";
 import ErrorReporter from "@/components/ErrorReporter";
 import Script from "next/script";
 
+// Get the base URL for Open Graph images
+function getBaseUrl() {
+  // Check for explicit site URL
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL;
+  }
+  // Vercel provides VERCEL_URL
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  // Fallback for local development
+  return "https://drjyotijoshi.com";
+}
+
+const baseUrl = getBaseUrl();
+const ogImageUrl = `${baseUrl}/Untitled%20design.jpg`;
+
 export const metadata: Metadata = {
   title: "ज्योतिष परामर्श | Dr. Jyoti Joshi",
   description:
     "विश्वसनीय वैदिक ज्योतिष परामर्श, अनुभवी महिला ज्योतिषियों के साथ ऑनलाइन स्लॉट बुक करें, Razorpay भुगतान व ईमेल पुष्टि के साथ.",
+  openGraph: {
+    title: "ज्योतिष परामर्श | Dr. Jyoti Joshi",
+    description:
+      "विश्वसनीय वैदिक ज्योतिष परामर्श, अनुभवी महिला ज्योतिषियों के साथ ऑनलाइन स्लॉट बुक करें, Razorpay भुगतान व ईमेल पुष्टि के साथ.",
+    url: baseUrl,
+    siteName: "Dr. Jyoti Joshi - ज्योतिष परामर्श",
+    images: [
+      {
+        url: ogImageUrl,
+        width: 1200,
+        height: 630,
+        alt: "ज्योतिष परामर्श - Dr. Jyoti Joshi",
+      },
+    ],
+    locale: "mr_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ज्योतिष परामर्श | Dr. Jyoti Joshi",
+    description:
+      "विश्वसनीय वैदिक ज्योतिष परामर्श, अनुभवी महिला ज्योतिषियों के साथ ऑनलाइन स्लॉट बुक करें, Razorpay भुगतान व ईमेल पुष्टि के साथ.",
+    images: [ogImageUrl],
+  },
 };
 
 export default function RootLayout({
