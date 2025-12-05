@@ -19,7 +19,7 @@ function getBaseUrl() {
 }
 
 const baseUrl = getBaseUrl();
-const ogImageUrl = `${baseUrl}/Untitled%20design.jpg`;
+const ogImageUrl = "https://drjyotijoshi.com/wp-content/uploads/2025/12/Screenshot-2025-12-05-110428.png";
 
 export const metadata: Metadata = {
   title: "ज्योतिष परामर्श | Dr. Jyoti Joshi",
