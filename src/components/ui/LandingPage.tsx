@@ -76,45 +76,47 @@ export default function LandingPage() {
         ]}
       />
 
-      <section id="process" className="py-16 px-4 bg-gradient-to-b from-purple-950/20 to-transparent">
-        <div className="container mx-auto max-w-5xl text-center">
-          <h2 className="text-3xl font-semibold mb-3">बुकिंग प्रक्रिया</h2>
-          <p className="text-purple-200 mb-10">केवल 4 सरल चरणों में अपनी स्लॉट बुक करें</p>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {[
-              { icon: Star, title: "ज्योतिषी चुनें", text: "6 सत्यापित प्रोफाइल" },
-              { icon: Clock, title: "तारीख व स्लॉट", text: "रियल टाइम उपलब्धता" },
-              { icon: Shield, title: "Razorpay भुगतान", text: "100% सुरक्षित" },
-              { icon: Users, title: "ईमेल पुष्टिकरण", text: "दोनों पक्षों को तुरंत" },
-            ].map(({ icon: Icon, title, text }) => (
-              <div key={title} className="border border-purple-500/40 rounded-2xl p-5 bg-black/40 backdrop-blur">
-                <div className="w-12 h-12 mx-auto mb-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                  <Icon className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="font-semibold mb-2">{title}</h3>
-                <p className="text-sm text-purple-200">{text}</p>
-              </div>
-            ))}
+      <div className="flex flex-col">
+        <section id="experts" className="py-16 px-4 order-1 md:order-2">
+          <div className="container mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold mb-4">
+                प्रमाणित <span className="text-purple-300">ज्योतिषी</span>
+              </h2>
+              <p className="text-purple-200 max-w-3xl mx-auto">
+                हर प्रोफाइल के साथ वास्तविक बायोडेटा, उपलब्ध स्लॉट और डायरेक्ट बुकिंग
+              </p>
+            </div>
+            <AstrologerSlideshow />
+            <div className="text-center mt-10 text-sm text-purple-200">
+              सभी सेशन ₹1100 के बीच, 25-35 मिनट के लिए
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="experts" className="py-16 px-4">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">
-              प्रमाणित <span className="text-purple-300">ज्योतिषी</span>
-            </h2>
-            <p className="text-purple-200 max-w-3xl mx-auto">
-              हर प्रोफाइल के साथ वास्तविक बायोडेटा, उपलब्ध स्लॉट और डायरेक्ट बुकिंग
-            </p>
+        <section id="process" className="py-16 px-4 bg-gradient-to-b from-purple-950/20 to-transparent order-2 md:order-1">
+          <div className="container mx-auto max-w-5xl text-center">
+            <h2 className="text-3xl font-semibold mb-3">बुकिंग प्रक्रिया</h2>
+            <p className="text-purple-200 mb-10">केवल 4 सरल चरणों में अपनी स्लॉट बुक करें</p>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              {[
+                { icon: Star, title: "ज्योतिषी चुनें", text: "6 सत्यापित प्रोफाइल" },
+                { icon: Clock, title: "तारीख व स्लॉट", text: "रियल टाइम उपलब्धता" },
+                { icon: Shield, title: "Razorpay भुगतान", text: "100% सुरक्षित" },
+                { icon: Users, title: "ईमेल पुष्टिकरण", text: "दोनों पक्षों को तुरंत" },
+              ].map(({ icon: Icon, title, text }) => (
+                <div key={title} className="border border-purple-500/40 rounded-2xl p-5 bg-black/40 backdrop-blur">
+                  <div className="w-12 h-12 mx-auto mb-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="font-semibold mb-2">{title}</h3>
+                  <p className="text-sm text-purple-200">{text}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          <AstrologerSlideshow />
-          <div className="text-center mt-10 text-sm text-purple-200">
-            सभी सेशन ₹1100 के बीच, 25-35 मिनट के लिए
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
       <section className="py-16 px-4 bg-gradient-to-t from-purple-950/30">
         <div className="container mx-auto">

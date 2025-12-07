@@ -68,14 +68,13 @@ export const astrologers: AstrologerProfile[] = [
     shortBio:
       "७ वर्षांचा अनुभव असलेल्या, ‘श्री गुरुकृपा ज्योती संस्था’च्या संचालिका व पुरस्कारप्राप्त ज्योतिष अभ्यासिका.",
     longBio:
-      "गेल्या सात वर्षांपासून ज्योतिष क्षेत्रात कार्यरत. महाराष्ट्र ज्योतिष परिषद मान्यता प्राप्त श्री गुरुकृपा ज्योतिष संस्थेच्या संचालिका. संस्थेमार्फत शेकडो विद्यार्थ्यांना ज्योतिष प्रशिक्षण. आजवर हजारो लोकांना ज्योतिषशास्त्राच्या माध्यमातून मार्गदर्शन. वैदिक ज्योतिष, कृष्णमूर्ती पद्धती, अंकशास्त्र, अष्टकवर्ग, वास्तुशास्त्र अभ्यासक. अनेक ज्योतिष अधिवेशनात व्याख्याने. ज्योतिश्री तसेच अहिल्यारत्न पुरस्कार प्राप्त.",
+      "गेल्या सात वर्षांपासून ज्योतिष क्षेत्रात कार्यरत. संस्थेमार्फत शेकडो विद्यार्थ्यांना ज्योतिष प्रशिक्षण. आजवर हजारो लोकांना ज्योतिषशास्त्राच्या माध्यमातून मार्गदर्शन. वैदिक ज्योतिष, कृष्णमूर्ती पद्धती, अंकशास्त्र, अष्टकवर्ग, वास्तुशास्त्र अभ्यासक. अनेक ज्योतिष अधिवेशनात व्याख्याने. ज्योतिश्री तसेच अहिल्यारत्न पुरस्कार प्राप्त.",
     languages: ["मराठी", "हिंदी", "English"],
     fee: 1100,
     sessionMinutes: 30,
     credentials: [
       "ज्योतिष विशेषज्ञ (Vedic + KP System)",
       "अंकशास्त्र व वास्तु अभ्यासक",
-      "मान्यताप्राप्त श्री गुरुकृपा ज्योती संस्था – संचालिका",
       "शेकडो विद्यार्थ्यांना ज्योतिष प्रशिक्षण",
       "हजारो लोकांना वैदिक मार्गदर्शन",
     ],
@@ -113,7 +112,7 @@ export const astrologers: AstrologerProfile[] = [
     shortBio:
       "एम.ए., बी.एड. इंग्लिश शिक्षणासोबत ज्योतिष विद्यावाचस्पती पदवीधर | वैदिक व टॅरो मार्गदर्शक | संयमित आणि व्यवहार्य उपायांची खासियत",
     longBio:
-      "नमस्कार मी प्रीती चंद्रशेखर. माझे शिक्षण एम ए बी एड इंग्लिश आहे. तसेच मी ज्योतिष विद्यावाचस्पती ही पदवी सुद्धा पूर्ण केलेली आहे. मी टॅरो कार्ड्स आणि अंक ज्योतिष चे शिक्षण घेतले आहे. गेले सहा वर्ष झाले मी ज्योतिषी म्हणून कार्यरत आहे.",
+      "नमस्कार मी आचार्य शिवांगी. माझे शिक्षण एम ए बी एड इंग्लिश आहे. तसेच मी ज्योतिष विद्यावाचस्पती ही पदवी सुद्धा पूर्ण केलेली आहे. मी टॅरो कार्ड्स आणि अंक ज्योतिष चे शिक्षण घेतले आहे. गेले सहा वर्ष झाले मी ज्योतिषी म्हणून कार्यरत आहे.",
     languages: ["मराठी", "हिंदी", "English"],
     fee: 1100,
     sessionMinutes: 30,
@@ -165,9 +164,9 @@ export const astrologers: AstrologerProfile[] = [
     },
   },
   {
-    id: "gauri-gopinath-pol",
-    slug: "gauri-gopinath-pol",
-    name: "Dr. Gauri Gopinath Pol",
+    id: "Astrologer-Acharya-kaveri",
+    slug: "Astrologer-Acharya-kaveri",
+    name: "Astro Dr. kaveri",
     headline: "ज्योतिष वाचस्पति • वैदिक ज्योतिष विशेषज्ञ",
     topicExpertise: "वैदिक ज्योतिष",
     experienceRange: "6–10 वर्षे",
@@ -260,7 +259,7 @@ export const astrologers: AstrologerProfile[] = [
     shortBio:
       "Jyotish Praveen • Jyotish Visharad • Destiny Manager | ऑनलाइन व ऑफलाइन मार्गदर्शन",
     longBio:
-      "Jyotish Praveen ,Jyotish visharad ,Jyotish Bhaskar 'A ,grade Diploma in AshtakVarg. वैदिक praveen to ratna exam done, astrology and MA in astrology 1st semester clear from Jyotish Sanshodhan Kendra, Jalgaon by Dr. Jyoti Joshi.",
+      "Jyotish Praveen ,Jyotish visharad ,Jyotish Bhaskar 'A ,grade Diploma in AshtakVarg. वैदिक praveen to ratna exam done, astrology and MA in astrology 1st semester",
     languages: ["मराठी", "हिंदी", "English"],
     fee: 1100,
     sessionMinutes: 30,
