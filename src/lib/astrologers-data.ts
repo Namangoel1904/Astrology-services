@@ -342,9 +342,9 @@ export const astrologers: AstrologerProfile[] = [
     },
   },
   {
-    id: "shakuntala-rajesh-dangat",
-    slug: "shakuntala-rajesh-dangat",
-    name: "Shakuntala Rajesh Dangat",
+    id: "Acharya-Maitreyi",
+    slug: "Acharya-Maitreyi",
+    name: "Acharya Maitreyi",
     headline: "कौटुंबिक मार्गदर्शक • गृहिणी ते प्रोफेशनल ज्योतिषी",
     topicExpertise: "वैदिक ज्योतिष",
     experienceRange: "3–5 वर्षे",
