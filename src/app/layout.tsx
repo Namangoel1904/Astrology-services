@@ -3,6 +3,7 @@ import "./globals.css";
 import VisualEditsMessenger from "../visual-edits/VisualEditsMessenger";
 import ErrorReporter from "@/components/ErrorReporter";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 
 const GTM_ID = "GTM-M34T7L2X";
 const GA_MEASUREMENT_ID = "G-Y61HQXKZKW";
@@ -104,6 +105,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         />
         {children}
         <VisualEditsMessenger />
+        <Analytics />
       </body>
     </html>
   );
