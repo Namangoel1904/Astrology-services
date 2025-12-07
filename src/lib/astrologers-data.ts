@@ -288,9 +288,9 @@ export const astrologers: AstrologerProfile[] = [
     },
   },
   {
-    id: "swati-bajirao-kakulte",
-    slug: "swati-bajirao-kakulte",
-    name: "Swati Bajirao Kakulte",
+    id: "Astrologer-Acharya-Uma",
+    slug: "Astrologer-Acharya-Uma",
+    name: "Astrologer Acharya Uma",
     headline: "ज्योतिष विशारद • समुपदेशन तज्ज्ञ",
     topicExpertise: "वैदिक ज्योतिष",
     experienceRange: "6–10 वर्षे",
@@ -300,7 +300,7 @@ export const astrologers: AstrologerProfile[] = [
     shortBio:
       "ज्योतिष प्रवीण, विशारद, भास्कर, अलंकार, विद्यावाचस्पती | अंकशास्त्र व वास्तु अभ्यासक",
     longBio:
-      "मी सौ. स्वाती बाजीराव काकुळते , मी गेल्या दहा अकरा वर्षांपासून ज्योतिषशास्त्र शिकून जातकांना मार्गदर्शन करते. ... दुःखी व्यक्तीच्या चेहऱ्यावर परत हसू आणणे हेच ध्येय.",
+      "मी ज्योतिषी आचार्य उमा , मी गेल्या दहा अकरा वर्षांपासून ज्योतिषशास्त्र शिकून जातकांना मार्गदर्शन करते. ... दुःखी व्यक्तीच्या चेहऱ्यावर परत हसू आणणे हेच ध्येय.",
     languages: ["मराठी", "हिंदी"],
     fee: 1100,
     sessionMinutes: 30,
